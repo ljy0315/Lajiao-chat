@@ -997,7 +997,174 @@ function saveWorldbook() {
     renderWorldbooks();
     closeWorldbookEdit();
 }
+// ===== 壁纸上传处理 =====
+let currentIconToChange = null;
+// ===== 图标上传处理 =====
+function selectIconToChange(iconName) {
+    currentIconToChange = iconName;
+    document.getElementById('iconInput').click();
+}
+// ===== Dock图标上传处理 =====
+let currentDockIconToChange = -1;
 
+function selectDockIconToChange(index) {
+    currentDockIconToChange = index;
+    document.getElementById('dockIconInput').click();
+}
+
+// 在设置面板中添加 Dock 图标上传按钮
+// 你需要先在 HTML 设置面板中添加 <input type="file" id="dockIconInput" accept="image/*" style="display:none;">
+document.getElementById('dockIconInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file && currentDockIconToChange >= 0) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imgUrl = event.target.result;
+            
+            // 更新对应的 Dock 图标
+            const dockIcon = document.getElementById(`dock-icon-${currentDockIconToChange}`);
+            if (dockIcon) {
+                dockIcon.style.backgroundImage = `url('${imgUrl}')`;
+                dockIcon.innerHTML = '';
+                localStorage.setItem(`dock-icon-${currentDockIconToChange}`, imgUrl);
+            }
+            
+            showToast('Dock图标已更新');
+            currentDockIconToChange = -1;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// 加载保存的 Dock 图标
+function loadCustomDockIcons() {
+    try {
+        for (let i = 0; i < 3; i++) {
+            const saved = localStorage.getItem(`dock-icon-${i}`);
+            if (saved) {
+                const dockIcon = document.getElementById(`dock-icon-${i}`);
+                if (dockIcon) {
+                    dockIcon.style.backgroundImage = `url('${saved}')`;
+                    dockIcon.innerHTML = '';
+                }
+            }
+        }
+    } catch(e) {}
+}
+
+// 调用加载 Dock 图标
+loadCustomDockIcons();
+document.getElementById('iconInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file && currentIconToChange) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imgUrl = event.target.result;
+            
+            // 根据选择的图标更新对应的图标
+            switch(currentIconToChange) {
+                case 'chat':
+                    document.getElementById('icon-chat').style.backgroundImage = `url('${imgUrl}')`;
+                    document.getElementById('icon-chat').innerHTML = '';
+                    localStorage.setItem('icon-chat', imgUrl);
+                    break;
+                case 'worldbook':
+                    document.getElementById('icon-book').style.backgroundImage = `url('${imgUrl}')`;
+                    document.getElementById('icon-book').innerHTML = '';
+                    localStorage.setItem('icon-book', imgUrl);
+                    break;
+                case 'settings':
+                    document.getElementById('icon-settings').style.backgroundImage = `url('${imgUrl}')`;
+                    document.getElementById('icon-settings').innerHTML = '';
+                    localStorage.setItem('icon-settings', imgUrl);
+                    break;
+                case 'contacts':
+                    document.getElementById('icon-contacts').style.backgroundImage = `url('${imgUrl}')`;
+                    document.getElementById('icon-contacts').innerHTML = '';
+                    localStorage.setItem('icon-contacts', imgUrl);
+                    break;
+            }
+            
+            // 更新按钮状态
+            const btn = document.querySelector(`.icon-custom-btn[onclick="selectIconToChange('${currentIconToChange}')"]`);
+            if (btn) {
+                btn.classList.add('has-custom-icon');
+                btn.style.backgroundImage = `url('${imgUrl}')`;
+            }
+            
+            showToast('图标已更新');
+            currentIconToChange = null;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// 加载保存的图标
+function loadCustomIcons() {
+    try {
+        const iconNames = ['chat', 'worldbook', 'settings', 'contacts'];
+        const iconIds = {
+            'chat': 'icon-chat',
+            'worldbook': 'icon-book',
+            'settings': 'icon-settings',
+            'contacts': 'icon-contacts'
+        };
+        
+        iconNames.forEach(name => {
+            const saved = localStorage.getItem(`icon-${name}`);
+            if (saved) {
+                const iconElement = document.getElementById(iconIds[name]);
+                if (iconElement) {
+                    iconElement.style.backgroundImage = `url('${saved}')`;
+                    iconElement.innerHTML = '';
+                }
+                
+                const btn = document.querySelector(`.icon-custom-btn[onclick="selectIconToChange('${name}')"]`);
+                if (btn) {
+                    btn.classList.add('has-custom-icon');
+                    btn.style.backgroundImage = `url('${saved}')`;
+                }
+            }
+        });
+    } catch(e) {}
+}
+
+// 调用加载图标
+loadCustomIcons();
+loadCustomDockIcons();
+document.getElementById('wallpaperInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imgUrl = event.target.result;
+            document.getElementById('desktop').style.backgroundImage = `url('${imgUrl}')`;
+            localStorage.setItem('wallpaper', imgUrl);
+            showToast('壁纸已更新');
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// 恢复默认壁纸
+function resetWallpaper() {
+    document.getElementById('desktop').style.backgroundImage = '';
+    localStorage.removeItem('wallpaper');
+    showToast('已恢复默认壁纸');
+}
+
+// 加载保存的壁纸
+function loadWallpaper() {
+    try {
+        const saved = localStorage.getItem('wallpaper');
+        if (saved) {
+            document.getElementById('desktop').style.backgroundImage = `url('${saved}')`;
+        }
+    } catch(e) {}
+}
+
+// 调用加载壁纸
+loadWallpaper();
 // ===== 文件上传处理（用于换头像） =====
 document.getElementById('fileInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -1441,3 +1608,6 @@ function showDestinyIntro() {
         }, 1000);
     }, 3000);
 }
+// 初始化加载壁纸和图标
+loadWallpaper();
+loadCustomIcons();
