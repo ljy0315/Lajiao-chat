@@ -227,29 +227,30 @@ body {
     left: 50%;
     bottom: 4%;
     transform: translateX(-50%);
-    width: 85%;
-    max-width: 360px;
-    height: 80px;
+    width: 90%;
+    max-width: 400px;
+    height: 130px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 18px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 24px;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 32px;
     z-index: 200;
     cursor: default;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
 
 .dock-app-icon {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 60px;
-    height: 60px;
+    width: 60px !important;
+    height: 60px !important;
     border: 1px solid #fff;
-    border-radius: 12px;
+    border-radius: 14px;
     background: #000;
     color: #fff;
     display: flex;
@@ -264,7 +265,7 @@ body {
 
 .dock-app-icon:active { transform: translateY(-50%) scale(0.88); }
 .dock-app-icon:hover { background: #fff; color: #000; }
-.dock-app-icon svg { width: 28px; height: 28px; fill: currentColor; }
+.dock-app-icon svg { width: 28px !important; height: 28px !important; fill: currentColor; }
 
 #status-bar {
     position: absolute;
@@ -1535,55 +1536,6 @@ input, textarea, select {
     transform: scale(1.05);
 }
 
-.icon-custom-btn span:first-child {
-    font-size: 24px;
-    margin-bottom: 5px;
-}
-
-.icon-custom-btn span:last-child {
-    font-size: 11px;
-    color: #fff;
-    text-align: center;
-}
-
-.icon-custom-btn.has-custom-icon {
-    background-size: cover;
-    background-position: center;
-}
-
-.icon-custom-btn.has-custom-icon span {
-    display: none;
-}
-/* Dock 图标按钮的样式 */
-.icon-custom-btn.has-custom-icon {
-    background-size: cover;
-    background-position: center;
-}
-
-.icon-custom-btn.has-custom-icon span {
-    display: none;
-}
-/* ===== 图标自定义按钮样式 ===== */
-.icon-custom-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 70px;
-    height: 70px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-    padding: 5px;
-}
-
-.icon-custom-btn:hover {
-    background: rgba(255,255,255,0.2);
-    transform: scale(1.05);
-}
-
 .icon-custom-btn:active {
     transform: scale(0.95);
 }
@@ -1615,7 +1567,8 @@ input, textarea, select {
     background-position: center !important;
     background-repeat: no-repeat !important;
 }
-/* 字体颜色样式 */
+
+/* ===== 字体颜色样式 ===== */
 body.font-white,
 body.font-white .app-label,
 body.font-white .chat-title,
@@ -1644,4 +1597,128 @@ body.font-black .contact-name-input,
 body.font-black .persona-input-group label,
 body.font-black .input-group label {
     color: #000 !important;
+}
+
+/* ===== Dock 栏放大（强制覆盖） ===== */
+#dock {
+    position: absolute;
+    left: 50%;
+    bottom: 4%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 380px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 28px;
+    z-index: 200;
+    cursor: default;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.dock-app-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px !important;
+    height: 60px !important;
+    border: 1px solid #fff;
+    border-radius: 12px;
+    background: #000;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: left 0.2s ease, top 0.2s ease;
+    z-index: 300;
+    background-size: cover;
+    background-position: center;
+}
+
+.dock-app-icon svg {
+    width: 28px !important;
+    height: 28px !important;
+    fill: currentColor;
+}
+
+.dock-app-icon:active {
+    transform: translateY(-50%) scale(0.88);
+}
+
+.dock-app-icon:hover {
+    background: #fff;
+    color: #000;
+}
+
+/* ===== 手机端适配 ===== */
+@media (max-width: 768px) {
+    /* 设置面板完整显示 */
+    #settings-panel {
+        padding: 15px !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* 字体颜色按钮调整 */
+    .settings-btn {
+        padding: 12px !important;
+        font-size: 13px !important;
+    }
+    
+       /* Dock 栏适配 */
+    #dock {
+        width: 92%;
+        max-width: 360px;
+        height: 100px;
+        bottom: 3%;
+        border-radius: 28px;
+        gap: 15px;
+    }
+    
+    .dock-app-icon {
+        width: 55px !important;
+        height: 55px !important;
+        border-radius: 14px;
+    }
+    
+    .dock-app-icon svg {
+        width: 26px !important;
+        height: 26px !important;
+    }
+    
+    /* 图标按钮适配 */
+    .icon-custom-btn {
+        width: 60px !important;
+        height: 60px !important;
+    }
+    
+    /* 设置面板中的按钮一行显示 */
+    #settings-panel .settings-btn {
+        margin-bottom: 8px !important;
+    }
+}
+
+/* ===== 设置面板滚动优化 ===== */
+#settings-panel {
+    scrollbar-width: thin;
+    scrollbar-color: #555 #333;
+}
+
+#settings-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+#settings-panel::-webkit-scrollbar-track {
+    background: #333;
+}
+
+#settings-panel::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 3px;
 }
