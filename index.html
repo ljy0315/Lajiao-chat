@@ -64,13 +64,13 @@
             </div>
 
             <div id="dock">
-                <div class="dock-app-icon" data-dock-id="0" id="dock-icon-0" style="left: 15px;" onclick="selectDockIconToChange(0)">
+                <div class="dock-app-icon" data-dock-id="0" id="dock-icon-0" style="left: 20px;" onclick="selectDockIconToChange(0)">
                     <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8L8 14 2 9.2h7.6z"/></svg>
                 </div>
-                <div class="dock-app-icon" data-dock-id="1" id="dock-icon-1" style="left: 94px;" onclick="selectDockIconToChange(1)">
+                <div class="dock-app-icon" data-dock-id="1" id="dock-icon-1" style="left: 120px;" onclick="selectDockIconToChange(1)">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                 </div>
-                <div class="dock-app-icon" data-dock-id="2" id="dock-icon-2" style="left: 173px;" onclick="selectDockIconToChange(2)">
+                <div class="dock-app-icon" data-dock-id="2" id="dock-icon-2" style="left: 220px;" onclick="selectDockIconToChange(2)">
                     <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                 </div>
             </div>
@@ -314,55 +314,66 @@
                 <label>主界面壁纸</label>
                 <div style="display:flex; gap:10px; align-items:center;">
                     <button class="settings-btn" style="flex:1; margin-bottom:0;" onclick="document.getElementById('wallpaperInput').click()">上传壁纸</button>
-                    <button class="settings-btn" style="flex:1; margin-bottom:0; border-color:#555; color:#aaa;" onclick="resetWallpaper()">恢复默认</button>
                 </div>
                 <input type="file" id="wallpaperInput" accept="image/*" style="display:none;">
             </div>
             
             <!-- 图标设置 -->
             <div class="input-group">
-                <label>图标自定义（选择要更换的图标）</label>
+                <label>图标自定义（点击图标可更换）</label>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <div class="icon-custom-btn" onclick="selectIconToChange('chat')">
+                    <div class="icon-custom-btn" id="icon-btn-chat" onclick="selectIconToChange('chat')">
                         <span>💬</span>
                         <span>Chat</span>
                     </div>
-                    <div class="icon-custom-btn" onclick="selectIconToChange('worldbook')">
+                    <div class="icon-custom-btn" id="icon-btn-worldbook" onclick="selectIconToChange('worldbook')">
                         <span>📖</span>
                         <span>世界书</span>
                     </div>
-                    <div class="icon-custom-btn" onclick="selectIconToChange('settings')">
+                    <div class="icon-custom-btn" id="icon-btn-settings" onclick="selectIconToChange('settings')">
                         <span>⚙️</span>
                         <span>设置</span>
                     </div>
-                    <div class="icon-custom-btn" onclick="selectIconToChange('contacts')">
+                    <div class="icon-custom-btn" id="icon-btn-contacts" onclick="selectIconToChange('contacts')">
                         <span>👥</span>
                         <span>通讯录</span>
                     </div>
                 </div>
                 <input type="file" id="iconInput" accept="image/*" style="display:none;">
-            </div>               
-                            
+            </div>
             
             <!-- Dock 图标设置 -->
             <div class="input-group">
-                <label>Dock 图标自定义</label>
+                <label>Dock 图标自定义（点击图标可更换）</label>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <div class="icon-custom-btn" onclick="selectDockIconToChange(0)">
+                    <div class="icon-custom-btn" id="dock-btn-0" onclick="selectDockIconToChange(0)">
                         <span>⭐</span>
                         <span>Dock 1</span>
                     </div>
-                    <div class="icon-custom-btn" onclick="selectDockIconToChange(1)">
+                    <div class="icon-custom-btn" id="dock-btn-1" onclick="selectDockIconToChange(1)">
                         <span>🌐</span>
                         <span>Dock 2</span>
                     </div>
-                    <div class="icon-custom-btn" onclick="selectDockIconToChange(2)">
+                    <div class="icon-custom-btn" id="dock-btn-2" onclick="selectDockIconToChange(2)">
                         <span>🎵</span>
                         <span>Dock 3</span>
                     </div>
                 </div>
                 <input type="file" id="dockIconInput" accept="image/*" style="display:none;">
             </div>
+            
+            <!-- 字体颜色设置 -->
+            <div class="input-group">
+                <label>字体颜色</label>
+                <div style="display:flex; gap:10px;">
+                    <button class="settings-btn" style="flex:1; margin-bottom:0; background:#fff; color:#000;" onclick="setFontColor('white')">白色</button>
+                    <button class="settings-btn" style="flex:1; margin-bottom:0; background:#000; color:#fff; border-color:#fff;" onclick="setFontColor('black')">黑色</button>
+                </div>
+            </div>
+            
+            <!-- 一键恢复默认 -->
+            <button class="settings-btn" onclick="resetAllCustomization()" style="border-color:#ff4d4d; color:#ff4d4d;">一键恢复默认</button>
+            
             <!-- API 配置 -->
             <div class="settings-header">
                 <h3>API 配置</h3>
