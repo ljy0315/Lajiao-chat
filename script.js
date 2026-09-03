@@ -2,7 +2,7 @@
 function bindTouchEvents(element, handlers) {
     // 触摸开始
     element.addEventListener('touchstart', function(e) {
-        e.preventDefault();
+        // 不调用 preventDefault，让点击事件正常触发
         const touch = e.touches[0];
         const event = {
             clientX: touch.clientX,
@@ -15,7 +15,7 @@ function bindTouchEvents(element, handlers) {
 
     // 触摸结束
     element.addEventListener('touchend', function(e) {
-        e.preventDefault();
+        // 不调用 preventDefault，让点击事件正常触发
         const event = {
             preventDefault: function() { e.preventDefault(); },
             stopPropagation: function() { e.stopPropagation(); }
@@ -25,7 +25,7 @@ function bindTouchEvents(element, handlers) {
 
     // 触摸移动
     element.addEventListener('touchmove', function(e) {
-        e.preventDefault();
+        // 不调用 preventDefault，让页面可以正常滚动
         const touch = e.touches[0];
         const event = {
             clientX: touch.clientX,
@@ -101,7 +101,7 @@ function renderContacts() {
         row.addEventListener('touchcancel', cancelPress);
 
         function startPress(e) {
-            e.preventDefault();
+            // 不阻止默认行为，保留点击事件
             pressTimer = setTimeout(() => {
                 const confirmDelete = confirm(`确定要删除角色“${contact.name}”吗？删除后其对应的人设资料也会一并删除！`);
                 if (confirmDelete) {
@@ -113,7 +113,6 @@ function renderContacts() {
         }
 
         function cancelPress(e) {
-            if (e) e.preventDefault();
             clearTimeout(pressTimer);
         }
 
@@ -212,7 +211,7 @@ function renderUserProfiles() {
         note.addEventListener('touchcancel', cancelPress);
 
         function startPress(e) {
-            e.preventDefault();
+            // 不阻止默认行为，保留点击事件
             pressTimer = setTimeout(() => {
                 const confirmDelete = confirm(`确定要删除身份“${profile.name}”吗？`);
                 if (confirmDelete) {
@@ -341,7 +340,7 @@ function renderChatSessions() {
         row.addEventListener('touchcancel', cancelPress);
         
         function startPress(e) {
-            e.preventDefault();
+            // 不阻止默认行为，保留点击事件
             pressTimer = setTimeout(() => {
                 const confirmRemove = confirm(`确定要移除与“${contact.name}”的会话吗？`);
                 if (confirmRemove) {
@@ -530,8 +529,7 @@ function renderMessageBubble(role, content, timestamp, msgIndex) {
     let longPressTimer = null;
     
     function startLongPress(e) {
-        e.preventDefault();
-        e.stopPropagation();
+        // 不阻止默认行为，保留点击事件
         longPressTimer = setTimeout(() => {
             isSelectMode = true;
             selectedMsgs = [msgIndex];
@@ -545,7 +543,6 @@ function renderMessageBubble(role, content, timestamp, msgIndex) {
     }
     
     function cancelLongPress(e) {
-        if (e) e.preventDefault();
         clearTimeout(longPressTimer);
     }
     
@@ -920,7 +917,7 @@ function renderWorldbooks() {
         row.addEventListener('mouseleave', cancelPress);
         row.addEventListener('touchcancel', cancelPress);
         function startPress(e) {
-            e.preventDefault();
+            // 不阻止默认行为，保留点击事件
             worldbookPressTimer = setTimeout(() => {
                 const confirmDelete = confirm(`确定要删除世界书“${book.name}”吗？删除后该书的设定内容也会一并删除！`);
                 if (confirmDelete) {
@@ -1064,7 +1061,7 @@ let isPressed = false;
 let isGenerating = false;
 
 function startBigPress(e) {
-    e.preventDefault();
+    // 不阻止默认行为，保留点击事件
     bigPressTimer = setTimeout(() => {
         isPressed = true;
         bigCircle.classList.add('squish');
@@ -1082,7 +1079,6 @@ function startBigPress(e) {
 }
 
 function endBigPress(e) {
-    if (e) e.preventDefault();
     clearTimeout(bigPressTimer);
     if (!isPressed && e && e.type !== 'mouseleave' && e.type !== 'touchcancel') {
         window.lastClickedElement = 'big-circle';
@@ -1215,8 +1211,7 @@ allAppIcons.forEach((icon, index) => {
     iconData.push({ element: icon, left: parseFloat(icon.style.left), top: parseFloat(icon.style.top) });
     
     function startIconDrag(e) {
-        e.preventDefault();
-        e.stopPropagation();
+        // 不阻止默认行为，保留点击事件
         activeDrag = { type: 'icon', element: icon, id: index, startX: e.clientX, startY: e.clientY, originalLeft: parseFloat(icon.style.left), originalTop: parseFloat(icon.style.top), moveDistance: 0 };
         icon.style.zIndex = 9999;
         icon.style.transition = 'none';
@@ -1231,7 +1226,7 @@ document.addEventListener('mousemove', handleIconMove);
 // 触摸移动
 document.addEventListener('touchmove', function(e) {
     const touch = e.touches[0];
-    handleIconMove({ clientX: touch.clientX, clientY: touch.clientY, preventDefault: () => e.preventDefault() });
+    handleIconMove({ clientX: touch.clientX, clientY: touch.clientY, preventDefault: () => {} });
 }, { passive: false });
 
 function handleIconMove(e) {
@@ -1357,8 +1352,7 @@ dockIconElements.forEach((icon, index) => {
     icon.setAttribute('data-dock-id', index);
     
     function startDockDrag(e) {
-        e.preventDefault();
-        e.stopPropagation();
+        // 不阻止默认行为，保留点击事件
         activeDrag = { type: 'dock-icon', element: icon, id: index, startX: e.clientX, startY: e.clientY, originalLeft: parseFloat(icon.style.left), originalTop: parseFloat(icon.style.top), moveDistance: 0 };
         icon.style.transition = 'none';
         icon.style.zIndex = 9999;
