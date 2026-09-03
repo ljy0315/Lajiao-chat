@@ -1,3 +1,46 @@
+// ===== 通用触摸事件工具函数 =====
+function bindTouchEvents(element, handlers) {
+    // 触摸开始
+    element.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const event = {
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+            preventDefault: function() { e.preventDefault(); },
+            stopPropagation: function() { e.stopPropagation(); }
+        };
+        if (handlers.mousedown) handlers.mousedown(event);
+    }, { passive: false });
+
+    // 触摸结束
+    element.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        const event = {
+            preventDefault: function() { e.preventDefault(); },
+            stopPropagation: function() { e.stopPropagation(); }
+        };
+        if (handlers.mouseup) handlers.mouseup(event);
+    }, { passive: false });
+
+    // 触摸移动
+    element.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const event = {
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+            preventDefault: function() { e.preventDefault(); },
+            stopPropagation: function() { e.stopPropagation(); }
+        };
+        if (handlers.mousemove) handlers.mousemove(event);
+    }, { passive: false });
+
+    // 触摸取消
+    element.addEventListener('touchcancel', function(e) {
+        if (handlers.mouseleave) handlers.mouseleave();
+    });
+}
 function openSettings() {
     document.getElementById('desktop').classList.add('hidden');
     document.getElementById('settings-panel').classList.add('show');
@@ -51,10 +94,14 @@ function renderContacts() {
         row.className = 'contact-row';
         row.onclick = () => openPersona(index);
         row.addEventListener('mousedown', startPress);
+        row.addEventListener('touchstart', startPress, { passive: false });
         row.addEventListener('mouseup', cancelPress);
+        row.addEventListener('touchend', cancelPress, { passive: false });
         row.addEventListener('mouseleave', cancelPress);
+        row.addEventListener('touchcancel', cancelPress);
 
         function startPress(e) {
+            e.preventDefault();
             pressTimer = setTimeout(() => {
                 const confirmDelete = confirm(`确定要删除角色“${contact.name}”吗？删除后其对应的人设资料也会一并删除！`);
                 if (confirmDelete) {
@@ -65,7 +112,10 @@ function renderContacts() {
             }, 700);
         }
 
-        function cancelPress() { clearTimeout(pressTimer); }
+        function cancelPress(e) {
+            if (e) e.preventDefault();
+            clearTimeout(pressTimer);
+        }
 
         const avatar = document.createElement('div');
         avatar.className = 'contact-avatar';
@@ -155,10 +205,14 @@ function renderUserProfiles() {
         note.className = 'user-note-card';
         note.onclick = () => openUserProfileEdit(index);
         note.addEventListener('mousedown', startPress);
+        note.addEventListener('touchstart', startPress, { passive: false });
         note.addEventListener('mouseup', cancelPress);
+        note.addEventListener('touchend', cancelPress, { passive: false });
         note.addEventListener('mouseleave', cancelPress);
+        note.addEventListener('touchcancel', cancelPress);
 
-        function startPress() {
+        function startPress(e) {
+            e.preventDefault();
             pressTimer = setTimeout(() => {
                 const confirmDelete = confirm(`确定要删除身份“${profile.name}”吗？`);
                 if (confirmDelete) {
@@ -169,7 +223,10 @@ function renderUserProfiles() {
             }, 700);
         }
 
-        function cancelPress() { clearTimeout(pressTimer); }
+        function cancelPress(e) {
+            if (e) e.preventDefault();
+            clearTimeout(pressTimer);
+        }
 
         const tape = document.createElement('div');
         tape.className = 'user-note-tape';
@@ -277,10 +334,14 @@ function renderChatSessions() {
         row.className = 'chat-session-row';
         row.onclick = () => openChatDetail(index);
         row.addEventListener('mousedown', startPress);
+        row.addEventListener('touchstart', startPress, { passive: false });
         row.addEventListener('mouseup', cancelPress);
+        row.addEventListener('touchend', cancelPress, { passive: false });
         row.addEventListener('mouseleave', cancelPress);
+        row.addEventListener('touchcancel', cancelPress);
         
         function startPress(e) {
+            e.preventDefault();
             pressTimer = setTimeout(() => {
                 const confirmRemove = confirm(`确定要移除与“${contact.name}”的会话吗？`);
                 if (confirmRemove) {
@@ -291,7 +352,10 @@ function renderChatSessions() {
             }, 700);
         }
         
-        function cancelPress() { clearTimeout(pressTimer); }
+        function cancelPress(e) {
+            if (e) e.preventDefault();
+            clearTimeout(pressTimer);
+        }
         
         const avatar = document.createElement('div');
         avatar.className = 'chat-session-avatar';
@@ -462,9 +526,12 @@ function renderMessageBubble(role, content, timestamp, msgIndex) {
         };
     }
 
-       // 长按进入多选模式
+          // 长按进入多选模式（支持触摸）
     let longPressTimer = null;
-    line.addEventListener('mousedown', () => {
+    
+    function startLongPress(e) {
+        e.preventDefault();
+        e.stopPropagation();
         longPressTimer = setTimeout(() => {
             isSelectMode = true;
             selectedMsgs = [msgIndex];
@@ -475,9 +542,19 @@ function renderMessageBubble(role, content, timestamp, msgIndex) {
             // 强制刷新当前消息列表，让所有气泡都显示出圆圈
             renderChatDetailMessages();
         }, 600);
-    });
-    line.addEventListener('mouseup', () => clearTimeout(longPressTimer));
-    line.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
+    }
+    
+    function cancelLongPress(e) {
+        if (e) e.preventDefault();
+        clearTimeout(longPressTimer);
+    }
+    
+    line.addEventListener('mousedown', startLongPress);
+    line.addEventListener('touchstart', startLongPress, { passive: false });
+    line.addEventListener('mouseup', cancelLongPress);
+    line.addEventListener('touchend', cancelLongPress, { passive: false });
+    line.addEventListener('mouseleave', cancelLongPress);
+    line.addEventListener('touchcancel', cancelLongPress);
 
     if (role === 'ai') {
         if (isSelectMode) line.appendChild(selectCircle);
@@ -837,9 +914,13 @@ function renderWorldbooks() {
         row.className = 'worldbook-row';
         row.onclick = () => openWorldbookEdit(index);
         row.addEventListener('mousedown', startPress);
+        row.addEventListener('touchstart', startPress, { passive: false });
         row.addEventListener('mouseup', cancelPress);
+        row.addEventListener('touchend', cancelPress, { passive: false });
         row.addEventListener('mouseleave', cancelPress);
+        row.addEventListener('touchcancel', cancelPress);
         function startPress(e) {
+            e.preventDefault();
             worldbookPressTimer = setTimeout(() => {
                 const confirmDelete = confirm(`确定要删除世界书“${book.name}”吗？删除后该书的设定内容也会一并删除！`);
                 if (confirmDelete) {
@@ -849,7 +930,10 @@ function renderWorldbooks() {
                 }
             }, 700);
         }
-        function cancelPress() { clearTimeout(worldbookPressTimer); }
+        function cancelPress(e) {
+            if (e) e.preventDefault();
+            clearTimeout(worldbookPressTimer);
+        }
         const indicator = document.createElement('div');
         indicator.className = 'worldbook-toggle-indicator';
         if (book.isOpen) indicator.classList.add('on');
@@ -899,19 +983,30 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
         const reader = new FileReader();
         reader.onload = function(event) {
             const imgUrl = event.target.result;
+            
+            // 1. 如果当前在 User资料编辑界面 → 更新该身份的头像
             if (document.getElementById('user-profile-edit').classList.contains('show')) {
                 userProfilesData[currentUserProfileIndex].avatar = imgUrl;
                 document.getElementById('user-profile-avatar').style.backgroundImage = `url('${imgUrl}')`;
                 saveUserProfiles();
             }
+            // 2. 如果当前在人设编辑界面 → 更新该角色的头像
             else if (document.getElementById('persona-panel').classList.contains('show')) {
                 contactsData[currentEditingIndex].avatar = imgUrl;
                 document.getElementById('persona-avatar').style.backgroundImage = `url('${imgUrl}')`;
-            } else {
+            }
+            // 3. 如果当前点击的是右侧大圆 → 更新大圆自己的背景
+            else if (window.lastClickedElement === 'big-circle') {
+                bigCircle.style.backgroundImage = `url('${imgUrl}')`;
+                bigCircle.innerHTML = '';
+            }
+            // 4. 默认 → 更新主界面正上方头像
+            else {
                 const avatar = document.getElementById('avatar-circle');
                 avatar.style.backgroundImage = `url('${imgUrl}')`;
                 avatar.innerHTML = '';
             }
+            
             saveContacts();
             renderContacts();
             renderChatSessions();
@@ -968,7 +1063,8 @@ let bigPressTimer = null;
 let isPressed = false;
 let isGenerating = false;
 
-bigCircle.addEventListener('mousedown', () => {
+function startBigPress(e) {
+    e.preventDefault();
     bigPressTimer = setTimeout(() => {
         isPressed = true;
         bigCircle.classList.add('squish');
@@ -983,12 +1079,31 @@ bigCircle.addEventListener('mousedown', () => {
         bubblePopup.classList.add('show');
         generateAIText();
     }, 300);
-});
+}
 
-bigCircle.addEventListener('mouseup', () => {
+function endBigPress(e) {
+    if (e) e.preventDefault();
     clearTimeout(bigPressTimer);
-    if (!isPressed) document.getElementById('fileInput').click();
+    if (!isPressed && e && e.type !== 'mouseleave' && e.type !== 'touchcancel') {
+        window.lastClickedElement = 'big-circle';
+        document.getElementById('fileInput').click();
+    }
     isPressed = false;
+}
+
+// 鼠标事件
+bigCircle.addEventListener('mousedown', startBigPress);
+bigCircle.addEventListener('mouseup', endBigPress);
+bigCircle.addEventListener('mouseleave', endBigPress);
+
+// 触摸事件
+bigCircle.addEventListener('touchstart', startBigPress, { passive: false });
+bigCircle.addEventListener('touchend', endBigPress, { passive: false });
+bigCircle.addEventListener('touchcancel', endBigPress);
+
+// 点击大圆时标记当前操作元素
+bigCircle.addEventListener('click', function(e) {
+    window.lastClickedElement = 'big-circle';
 });
 
 async function generateAIText() {
@@ -1088,40 +1203,70 @@ function saveConfig() {
     showToast('配置保存成功');
 }
 
-// ===== 图标拖拽逻辑 =====
+// ===== 图标拖拽逻辑（支持触摸） =====
 let activeDrag = null;
 const ICON_GRID_X = 75;
 const ICON_GRID_Y = 88;
 const allAppIcons = document.querySelectorAll('#icon-area .app-wrapper');
 const iconData = [];
+
 allAppIcons.forEach((icon, index) => {
     icon.setAttribute('data-id', index);
     iconData.push({ element: icon, left: parseFloat(icon.style.left), top: parseFloat(icon.style.top) });
-    icon.addEventListener('mousedown', (e) => {
+    
+    function startIconDrag(e) {
+        e.preventDefault();
+        e.stopPropagation();
         activeDrag = { type: 'icon', element: icon, id: index, startX: e.clientX, startY: e.clientY, originalLeft: parseFloat(icon.style.left), originalTop: parseFloat(icon.style.top), moveDistance: 0 };
         icon.style.zIndex = 9999;
         icon.style.transition = 'none';
-        e.preventDefault();
-    });
+    }
+    
+    icon.addEventListener('mousedown', startIconDrag);
+    bindTouchEvents(icon, { mousedown: startIconDrag });
 });
 
-document.addEventListener('mousemove', (e) => {
+// 鼠标移动
+document.addEventListener('mousemove', handleIconMove);
+// 触摸移动
+document.addEventListener('touchmove', function(e) {
+    const touch = e.touches[0];
+    handleIconMove({ clientX: touch.clientX, clientY: touch.clientY, preventDefault: () => e.preventDefault() });
+}, { passive: false });
+
+function handleIconMove(e) {
     if (activeDrag && activeDrag.type === 'icon') {
         const dx = e.clientX - activeDrag.startX;
         const dy = e.clientY - activeDrag.startY;
         activeDrag.element.style.left = `${activeDrag.originalLeft + dx}px`;
         activeDrag.element.style.top = `${activeDrag.originalTop + dy}px`;
+        activeDrag.moveDistance = Math.max(activeDrag.moveDistance, Math.abs(dx) + Math.abs(dy));
     } else if (activeDrag && activeDrag.type === 'dock-icon') {
         const dx = e.clientX - activeDrag.startX;
         const dy = e.clientY - activeDrag.startY;
         activeDrag.element.style.left = `${activeDrag.originalLeft + dx}px`;
         activeDrag.element.style.top = `${activeDrag.originalTop + dy}px`;
         activeDrag.element.style.zIndex = 300;
+        activeDrag.moveDistance = Math.max(activeDrag.moveDistance, Math.abs(dx) + Math.abs(dy));
     }
-});
+}
 
-document.addEventListener('mouseup', () => {
+// 鼠标释放
+document.addEventListener('mouseup', handleIconDrop);
+// 触摸结束
+document.addEventListener('touchend', function(e) {
+    handleIconDrop(e);
+}, { passive: false });
+
+function handleIconDrop(e) {
     if (!activeDrag) return;
+    
+    // 如果几乎没有移动，不处理拖拽（可能是点击）
+    if (activeDrag.moveDistance < 5) {
+        activeDrag = null;
+        return;
+    }
+    
     if (activeDrag.type === 'icon') {
         const el = activeDrag.element;
         el.style.transition = 'left 0.25s ease, top 0.25s ease';
@@ -1204,18 +1349,23 @@ document.addEventListener('mouseup', () => {
         el.style.zIndex = 300;
         activeDrag = null;
     }
-});
+}
 
 // ===== Dock内部图标：独立拖拽 =====
 const dockIconElements = document.querySelectorAll('.dock-app-icon');
 dockIconElements.forEach((icon, index) => {
     icon.setAttribute('data-dock-id', index);
-    icon.addEventListener('mousedown', (e) => {
+    
+    function startDockDrag(e) {
         e.preventDefault();
-        activeDrag = { type: 'dock-icon', element: icon, id: index, startX: e.clientX, startY: e.clientY, originalLeft: parseFloat(icon.style.left), originalTop: parseFloat(icon.style.top) };
+        e.stopPropagation();
+        activeDrag = { type: 'dock-icon', element: icon, id: index, startX: e.clientX, startY: e.clientY, originalLeft: parseFloat(icon.style.left), originalTop: parseFloat(icon.style.top), moveDistance: 0 };
         icon.style.transition = 'none';
         icon.style.zIndex = 9999;
-    });
+    }
+    
+    icon.addEventListener('mousedown', startDockDrag);
+    bindTouchEvents(icon, { mousedown: startDockDrag });
 });
 // ===== 结缘入场动画（纯 JS 硬核动画，绝对能滑！） =====
 function showDestinyIntro() {
