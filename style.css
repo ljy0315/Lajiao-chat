@@ -1,25 +1,33 @@
-body { background: #2a2a2a; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; user-select: none; }
+body { 
+    background: #000; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    margin: 0; 
+    font-family: sans-serif; 
+    user-select: none; 
+    -webkit-user-select: none; 
+    touch-action: manipulation; 
+    overflow: hidden; 
+}
 
-.phone-frame {
-    width: 400px;
-    height: 90vh;
-    max-height: 800px;
-    min-height: 600px;
+#app-container {
+    width: 100vw;
+    height: 100vh;
     background: #1a1a1a;
-    border-radius: 40px;
-    padding: 12px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
     box-sizing: border-box;
     position: relative;
+    overflow: hidden;
 }
 
 #desktop {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background: #000;
     position: relative;
     overflow: hidden;
-    border-radius: 30px;
+    border-radius: 0;
     background-size: cover;
     background-position: center;
     transition: background 0.3s ease;
@@ -30,12 +38,12 @@ body { background: #2a2a2a; display: flex; justify-content: center; align-items:
 #settings-panel {
     display: none;
     position: absolute;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: #000;
-    border-radius: 30px;
+    border-radius: 0;
     z-index: 9999;
     padding: 30px 20px;
     box-sizing: border-box;
@@ -778,7 +786,6 @@ body { background: #2a2a2a; display: flex; justify-content: center; align-items:
 
 .sticky-note label { color: #333; font-weight: bold; }
 
-/* ===== 修改的地方：确保User资料便签纸里的input和textarea文字为黑色 ===== */
 .sticky-note input,
 .sticky-note textarea {
     color: #000 !important;
@@ -1254,20 +1261,19 @@ input:checked + .slider:before { transform: translateX(22px); }
 .chat-msg-timestamp {
     font-size: 10px;
     color: #888;
-    flex-shrink: 0; /* 关键：禁止被压缩 */
-    align-self: flex-end; /* 贴底对齐，更好看 */
+    flex-shrink: 0;
+    align-self: flex-end;
     margin-bottom: 4px;
 }
 
-/* AI 的时间戳：紧贴气泡右侧 */
 .chat-msg-line.ai .chat-msg-timestamp {
-    margin-left: 6px; /* AI 时间戳放在气泡右侧（紧贴气泡） */
+    margin-left: 6px;
 }
 
-/* 用户的时间戳：紧贴气泡左侧 */
 .chat-msg-line.user .chat-msg-timestamp {
-    margin-right: 6px; /* User 时间戳放在气泡左侧（紧贴气泡） */
+    margin-right: 6px;
 }
+
 /* 多选打勾圆圈样式 */
 .select-circle {
     width: 22px;
@@ -1297,7 +1303,6 @@ input:checked + .slider:before { transform: translateX(22px); }
     border-color: #00ff88 !important;
 }
 
-/* 圆圈位置 */
 .chat-msg-line.ai .select-circle {
     order: -1;
     margin-right: 8px;
@@ -1307,7 +1312,8 @@ input:checked + .slider:before { transform: translateX(22px); }
     order: 3;
     margin-left: 8px;
 }
-/* ===== 结缘入场动画（纯CSS版） ===== */
+
+/* ===== 结缘入场动画 ===== */
 #destiny-intro {
     position: absolute;
     top: 0;
@@ -1340,21 +1346,18 @@ input:checked + .slider:before { transform: translateX(22px); }
     z-index: 10;
 }
 
-/* AI头像：默认在左下角（这就是初始状态） */
 #destiny-ai-avatar {
     left: 10%;
     top: 75%;
     opacity: 1;
 }
 
-/* User头像：默认在右上角（这就是初始状态） */
 #destiny-user-avatar {
     right: 10%;
     top: 15%;
     opacity: 1;
 }
 
-/* 当给 #destiny-intro 加上 .show 类后，两个头像开始往中间滑动 */
 #destiny-intro.show #destiny-ai-avatar {
     left: calc(50% - 80px);
     top: calc(50% - 45px);
@@ -1366,13 +1369,7 @@ input:checked + .slider:before { transform: translateX(22px); }
     top: calc(50% - 45px);
     transition: right 2s ease-in-out, top 2s ease-in-out;
 }
-#destiny-intro.show #destiny-user-avatar {
-    right: calc(50% - 80px);
-    top: calc(50% - 45px);
-    opacity: 1;
-}
 
-/* 爱心：在中间突然炸开 */
 #destiny-heart {
     position: absolute;
     top: 50%;
@@ -1410,14 +1407,110 @@ input:checked + .slider:before { transform: translateX(22px); }
     from { opacity: 0; }
     to { opacity: 1; }
 }
-/* 闪黑转场效果 */
+
 #destiny-intro.fade-out {
     animation: fadeOutBlack 0.6s ease forwards;
 }
 
 @keyframes fadeOutBlack {
     0%   { opacity: 1; filter: brightness(1); }
-    40%  { opacity: 1; filter: brightness(0.2); }   /* 慢慢变暗 */
-    60%  { opacity: 0; filter: brightness(0); }      /* 彻底全黑 */
-    100% { opacity: 0; filter: brightness(0); }      /* 保持全黑，不亮回来！ */
+    40%  { opacity: 1; filter: brightness(0.2); }
+    60%  { opacity: 0; filter: brightness(0); }
+    100% { opacity: 0; filter: brightness(0); }
+}
+
+/* ===== 移动端适配 ===== */
+@media (max-width: 768px) {
+    #app-container {
+        border-radius: 0;
+    }
+    
+    #desktop {
+        border-radius: 0;
+    }
+}
+
+/* 触摸优化 */
+* {
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+}
+
+input, textarea, select {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+    -webkit-touch-callout: default !important;
+}
+
+.app-icon:active,
+.dock-app-icon:active,
+.chat-nav-btn:active,
+.chat-bottom-icon:active {
+    transform: scale(0.85);
+}
+
+.app-wrapper,
+.dock-app-icon,
+.chat-session-row,
+.contact-row,
+.worldbook-row,
+.user-note-card {
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+}
+
+#icon-area {
+    top: 45% !important;
+    left: 20px !important;
+}
+
+.app-wrapper {
+    scale: 0.9;
+}
+
+#big-circle {
+    right: 5% !important;
+    top: 40% !important;
+    width: 110px !important;
+    height: 110px !important;
+}
+
+#bubble-popup {
+    right: 2% !important;
+    top: 65% !important;
+    width: 110px !important;
+}
+
+#status-bar {
+    height: 28px !important;
+    font-size: 11px !important;
+    padding: 0 12px !important;
+}
+
+#avatar-circle {
+    width: 60px !important;
+    height: 60px !important;
+    top: 7% !important;
+}
+
+#profile-card {
+    top: 14% !important;
+    height: 120px !important;
+}
+
+#dock {
+    bottom: 3% !important;
+    height: 50px !important;
+}
+
+.dock-app-icon {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+#delete-bar {
+    width: 85% !important;
+    max-width: 300px !important;
 }
