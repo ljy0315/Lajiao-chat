@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>极简AI智能桌面</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="phone-frame">
+        <!-- 主桌面 -->
+        <div id="desktop">
+            <div id="status-bar">
+                <span id="current-time">--:--</span>
+                <span style="display:flex; align-items:center; gap: 6px;">
+                    <svg class="status-icon" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+                    <span id="battery-level">--%</span>
+                    <svg class="status-icon" viewBox="0 0 24 24"><rect x="1" y="6" width="18" height="12" rx="2" ry="2"></rect><line x1="23" y1="13" x2="23" y2="11"></line><line x1="12" y1="10" x2="12" y2="14"></line></svg>
+                </span>
+            </div>
+
+            <div id="avatar-circle" onclick="document.getElementById('fileInput').click()">
+                <div class="avatar-placeholder">点击<br>上传头像</div>
+            </div>
+            
+            <div id="profile-card">
+                <input type="text" class="card-name" value="我的昵称" maxlength="10">
+            </div>
+            
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+            <!-- 挤压大圆与气泡 -->
+            <div id="big-circle"><span>点击上传图片</span></div>
+            <div id="bubble-popup"><span class="bubble-loader"></span></div>
+
+            <div id="icon-area">
+                <div class="app-wrapper" data-app="Chat" style="left: 0px; top: 0px;">
+                    <div class="app-icon" id="icon-chat" onclick="openChat()">
+                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+                    </div>
+                    <div class="app-label">Chat</div>
+                </div>
+
+                <div class="app-wrapper" data-app="世界书" style="left: 75px; top: 0px;">
+                    <div class="app-icon" id="icon-book" onclick="openWorldbooks()">
+                        <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+                    </div>
+                    <div class="app-label">世界书</div>
+                </div>
+
+                <div class="app-wrapper" data-app="设置" style="left: 0px; top: 88px;">
+                    <div class="app-icon" id="icon-settings" onclick="openSettings()">
+                        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    </div>
+                    <div class="app-label">设置</div>
+                </div>
+
+                <div class="app-wrapper" data-app="通讯录" style="left: 75px; top: 88px;">
+                    <div class="app-icon" id="icon-contacts" onclick="openContacts()">
+                        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    </div>
+                    <div class="app-label">通讯录</div>
+                </div>
+            </div>
+
+            <div id="dock">
+                <div class="dock-app-icon" data-dock-id="0" id="dock-icon-0" style="left: 15px;">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8L8 14 2 9.2h7.6z"/></svg>
+                </div>
+                <div class="dock-app-icon" data-dock-id="1" id="dock-icon-1" style="left: 94px;">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                </div>
+                <div class="dock-app-icon" data-dock-id="2" id="dock-icon-2" style="left: 173px;">
+                    <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                </div>
+            </div>
+        </div>
+<!-- ===== 结缘入场过渡界面 ===== -->
+<div id="destiny-intro">
+    <div id="destiny-ai-avatar" class="intro-avatar">
+        <span>AI</span>
+    </div>
+    <div id="destiny-user-avatar" class="intro-avatar">
+        <span>我</span>
+    </div>
+    
+    
+    
+    <div id="destiny-heart">❤</div>
+    <div id="destiny-text">正在结缘中...</div>
+</div>
+        <!-- ===== Chat 面板 ===== -->
+        <div id="chat-panel">
+            <div class="chat-header">
+                <button class="chat-nav-btn" onclick="closeChat()">←</button>
+                <div class="chat-title">Chat</div>
+                <button class="chat-nav-btn" onclick="showAddRoleModal()">+</button>
+            </div>
+            
+            <div id="chat-empty-state" style="text-align:center; color:#888; margin-top:50px; font-size:14px;">
+                请点击右上角“+”添加角色
+            </div>
+
+            <div id="chat-list"></div>
+
+            <!-- 底部三图标栏 -->
+            <div class="chat-bottom-bar">
+                <div class="chat-bottom-icon" onclick="closeChat()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" width="24" height="24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H5l-2 2V11.5a8.5 8.5 0 0 1 8.5-8.5H12.5A8.5 8.5 0 0 1 21 11.5z"/></svg>
+                    <span>消息</span>
+                </div>
+                <div class="chat-bottom-icon" onclick="openUserProfiles()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" width="24" height="24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                    <span>User资料</span>
+                </div>
+                <div class="chat-bottom-icon" onclick="alert('朋友圈暂未开发')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" width="24" height="24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg>
+                    <span>朋友圈</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 聊天详情界面 ===== -->
+        <div id="chat-detail-panel">
+            <div class="chat-detail-header">
+                <button class="chat-nav-btn" onclick="closeChatDetail()">←</button>
+                <div class="chat-detail-avatars">
+                    <div class="detail-avatar detail-avatar-left" id="detail-avatar-ai"><span>👤</span></div>
+                    <div class="detail-avatar detail-avatar-right" id="detail-avatar-user"><span>😊</span></div>
+                </div>
+                <button class="chat-nav-btn" onclick="openChatDetailSettings()">···</button>
+            </div>
+
+            <div class="chat-detail-messages" id="chat-detail-messages"></div>
+
+            <div class="chat-detail-menu-panel" id="chat-detail-menu-panel">
+                <div class="chat-menu-btn" onclick="openGallery()">
+                    <div class="chat-menu-icon">🖼️</div>
+                    <div class="chat-menu-text">相册</div>
+                </div>
+                <div class="chat-menu-btn" onclick="alert('转账功能后续开发')">
+                    <div class="chat-menu-icon">💰</div>
+                    <div class="chat-menu-text">转账</div>
+                </div>
+            </div>
+
+            <div class="chat-detail-input-bar">
+                <button class="chat-input-btn" id="chat-menu-toggle-btn" onclick="toggleChatMenu()">+</button>
+                <input type="text" class="chat-detail-input" id="chat-detail-input" placeholder="输入消息...">
+                <button class="chat-action-btn chat-send-btn" onclick="sendUserMessage()">❤️</button>
+                <button class="chat-action-btn chat-receive-btn" onclick="receiveAIMessage()">⬇️</button>
+            </div>
+        </div>
+
+        <!-- ===== 聊天详情设置弹窗 ===== -->
+        <div id="chat-detail-settings-modal">
+            <div class="modal-header">
+                <h3>聊天设置</h3>
+                <button class="close-settings" onclick="hideChatDetailSettings()">×</button>
+            </div>
+                <!-- 绑定 User 身份（新增） -->
+    <div class="input-group">
+        <label>绑定 User 身份</label>
+        <select id="chat-user-profile-select">
+            <option value="0">默认（第一个身份）</option>
+        </select>
+    </div>
+    
+            <!-- 记忆条数 -->
+            <div class="input-group">
+                <label>记忆条数（最多1000条）</label>
+                <input type="number" id="chat-memory-limit" min="1" max="1000" placeholder="输入数字，如 50">
+            </div>
+            
+            <!-- 聊天温度 -->
+            <div class="input-group">
+                <label>聊天温度（0.0 - 2.0）</label>
+                <input type="number" id="chat-temperature" min="0" max="2" step="0.1" placeholder="默认 0.7">
+            </div>
+            
+            <!-- 时间戳开关 -->
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; background:rgba(255,255,255,0.05); padding:12px; border-radius:8px;">
+                <span style="color:#aaa; font-size:14px;">显示每条气泡时间戳</span>
+                <label class="switch">
+                    <input type="checkbox" id="chat-timestamp-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <!-- 挂载世界书 -->
+            <div class="input-group">
+                <label>挂载世界书（可多选）</label>
+                <div id="chat-worldbook-list" style="max-height:200px; overflow-y:auto;"></div>
+            </div>
+            
+            <button class="settings-btn" onclick="saveChatDetailSettings()">保存设置</button>
+            <button class="settings-btn" onclick="hideChatDetailSettings()" style="border-color:#555; color:#aaa;">取消</button>
+        </div>
+
+        <!-- ===== 添加角色弹窗 ===== -->
+        <div id="add-role-modal">
+            <div class="modal-header">
+                <h3>选择角色</h3>
+                <button class="close-settings" onclick="hideAddRoleModal()">×</button>
+            </div>
+            <div id="add-role-list"></div>
+        </div>
+
+        <!-- ===== User资料便签纸墙界面 ===== -->
+        <div id="user-profiles-wall">
+            <div class="user-wall-header">
+                <button class="chat-nav-btn" onclick="closeUserProfiles()">←</button>
+                <div class="user-wall-title">User资料</div>
+                <button class="chat-nav-btn" onclick="addUserProfile()">+</button>
+            </div>
+            <div id="user-profiles-list"></div>
+        </div>
+
+        <!-- ===== 单张便签纸编辑界面 ===== -->
+        <div id="user-profile-edit">
+            <div class="user-edit-header">
+                <button class="chat-nav-btn" onclick="closeUserProfileEdit()">←</button>
+                <div class="user-wall-title">编辑资料</div>
+                <button class="chat-nav-btn" onclick="saveUserProfile()">✓</button>
+            </div>
+            <div class="sticky-note">
+                <div class="sticky-note-tape"></div>
+                <div class="persona-avatar" id="user-profile-avatar" onclick="document.getElementById('fileInput').click()">上传头像</div>
+                <div class="persona-input-group">
+                    <label>昵称</label>
+                    <input type="text" id="user-profile-name" placeholder="你的昵称">
+                </div>
+                <div class="persona-input-group">
+                    <label>年龄</label>
+                    <input type="text" id="user-profile-age" placeholder="你的年龄">
+                </div>
+                <div class="persona-input-group">
+                    <label>偏好 / 爱好</label>
+                    <textarea id="user-profile-desc" placeholder="让AI更懂你..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 通讯录面板 -->
+        <div id="contacts-panel">
+            <div class="contacts-header">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <button class="add-contact-btn" style="font-size:20px;" onclick="closeContacts()">←</button>
+                    <h3 style="margin:0;">通讯录</h3>
+                </div>
+                <button class="add-contact-btn" onclick="addContact()">+</button>
+            </div>
+            <div id="contacts-list"></div>
+        </div>
+
+        <!-- 人设资料面板 -->
+        <div id="persona-panel">
+            <div class="persona-header">
+                <h3>人设资料</h3>
+                <button class="close-settings" onclick="closePersona()">×</button>
+            </div>
+            <div class="persona-avatar" id="persona-avatar" onclick="document.getElementById('fileInput').click()">上传头像</div>
+            <div class="persona-input-group">
+                <label>角色名字</label>
+                <input type="text" id="persona-name" placeholder="输入角色名字">
+            </div>
+            <div class="persona-input-group">
+                <label>性格/背景设定</label>
+                <textarea id="persona-desc" placeholder="输入角色的人设资料..."></textarea>
+            </div>
+            <button class="persona-save-btn" onclick="savePersona()">保存人设</button>
+        </div>
+
+        <!-- ===== 世界书面板 ===== -->
+        <div id="worldbooks-panel">
+            <div class="contacts-header">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <button class="add-contact-btn" style="font-size:20px;" onclick="closeWorldbooks()">←</button>
+                    <h3 style="margin:0;">世界书</h3>
+                </div>
+                <button class="add-contact-btn" onclick="addWorldbook()">+</button>
+            </div>
+            <div id="worldbooks-list"></div>
+        </div>
+
+        <!-- ===== 世界书编辑面板 ===== -->
+        <div id="worldbook-edit-panel">
+            <div class="persona-header">
+                <h3>编辑世界书</h3>
+                <button class="close-settings" onclick="closeWorldbookEdit()">×</button>
+            </div>
+            
+            <div class="persona-input-group">
+                <label>书名</label>
+                <input type="text" id="worldbook-name" placeholder="输入书名">
+            </div>
+            <div class="persona-input-group">
+                <label>世界观设定 / 内容</label>
+                <textarea id="worldbook-content" placeholder="输入世界观设定内容..."></textarea>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; background:rgba(255,255,255,0.05); padding:12px; border-radius:8px;">
+                <span style="color:#aaa; font-size:14px;">挂载时读取</span>
+                <label class="switch">
+                    <input type="checkbox" id="worldbook-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <button class="persona-save-btn" onclick="saveWorldbook()">保存世界书</button>
+        </div>
+
+        <!-- 设置面板 -->
+        <div id="settings-panel">
+            <div class="settings-header">
+                <h3>API 配置</h3>
+                <button class="close-settings" onclick="closeSettings()">×</button>
+            </div>
+            <div class="input-group"><label>中转站 URL</label><input type="text" id="api-base-url" placeholder="https://api.deepseek.com/v1"></div>
+            <div class="input-group"><label>API Key</label><input type="password" id="api-key" placeholder="sk-..."></div>
+            <button class="settings-btn" id="fetch-btn" onclick="fetchModels()"><span id="fetch-text">获取模型</span><span id="fetch-loader" style="display:none;" class="spinner"></span></button>
+            <div class="input-group"><label>选择模型</label><select id="model-select"><option value="">请先点击“获取模型”</option></select></div>
+            <button class="settings-btn" id="save-btn" onclick="saveConfig()">保存配置</button>
+            <button class="settings-btn" onclick="closeSettings()" style="border-color:#555; color:#aaa;">关闭</button>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
