@@ -2,7 +2,6 @@
 function bindTouchEvents(element, handlers) {
     // 触摸开始
     element.addEventListener('touchstart', function(e) {
-        // 不调用 preventDefault，让点击事件正常触发
         const touch = e.touches[0];
         const event = {
             clientX: touch.clientX,
@@ -11,21 +10,19 @@ function bindTouchEvents(element, handlers) {
             stopPropagation: function() { e.stopPropagation(); }
         };
         if (handlers.mousedown) handlers.mousedown(event);
-    }, { passive: false });
+    }, { passive: true });
 
     // 触摸结束
     element.addEventListener('touchend', function(e) {
-        // 不调用 preventDefault，让点击事件正常触发
         const event = {
             preventDefault: function() { e.preventDefault(); },
             stopPropagation: function() { e.stopPropagation(); }
         };
         if (handlers.mouseup) handlers.mouseup(event);
-    }, { passive: false });
+    }, { passive: true });
 
     // 触摸移动
     element.addEventListener('touchmove', function(e) {
-        // 不调用 preventDefault，让页面可以正常滚动
         const touch = e.touches[0];
         const event = {
             clientX: touch.clientX,
@@ -34,13 +31,15 @@ function bindTouchEvents(element, handlers) {
             stopPropagation: function() { e.stopPropagation(); }
         };
         if (handlers.mousemove) handlers.mousemove(event);
-    }, { passive: false });
+    }, { passive: true });
 
     // 触摸取消
     element.addEventListener('touchcancel', function(e) {
         if (handlers.mouseleave) handlers.mouseleave();
     });
 }
+
+// ===== 设置面板 =====
 function openSettings() {
     document.getElementById('desktop').classList.add('hidden');
     document.getElementById('settings-panel').classList.add('show');
@@ -94,14 +93,13 @@ function renderContacts() {
         row.className = 'contact-row';
         row.onclick = () => openPersona(index);
         row.addEventListener('mousedown', startPress);
-        row.addEventListener('touchstart', startPress, { passive: false });
+        row.addEventListener('touchstart', startPress, { passive: true });
         row.addEventListener('mouseup', cancelPress);
-        row.addEventListener('touchend', cancelPress, { passive: false });
+        row.addEventListener('touchend', cancelPress, { passive: true });
         row.addEventListener('mouseleave', cancelPress);
         row.addEventListener('touchcancel', cancelPress);
 
         function startPress(e) {
-            // 不阻止默认行为，保留点击事件
             pressTimer = setTimeout(() => {
                 const confirmDelete = confirm(`确定要删除角色“${contact.name}”吗？删除后其对应的人设资料也会一并删除！`);
                 if (confirmDelete) {
@@ -204,14 +202,13 @@ function renderUserProfiles() {
         note.className = 'user-note-card';
         note.onclick = () => openUserProfileEdit(index);
         note.addEventListener('mousedown', startPress);
-        note.addEventListener('touchstart', startPress, { passive: false });
+        note.addEventListener('touchstart', startPress, { passive: true });
         note.addEventListener('mouseup', cancelPress);
-        note.addEventListener('touchend', cancelPress, { passive: false });
+        note.addEventListener('touchend', cancelPress, { passive: true });
         note.addEventListener('mouseleave', cancelPress);
         note.addEventListener('touchcancel', cancelPress);
 
         function startPress(e) {
-            // 不阻止默认行为，保留点击事件
             pressTimer = setTimeout(() => {
                 const confirmDelete = confirm(`确定要删除身份“${profile.name}”吗？`);
                 if (confirmDelete) {
@@ -223,7 +220,6 @@ function renderUserProfiles() {
         }
 
         function cancelPress(e) {
-            if (e) e.preventDefault();
             clearTimeout(pressTimer);
         }
 
@@ -304,7 +300,7 @@ function ensureChatSessionSettings() {
 ensureChatSessionSettings();
 
 function openChat() {
-      showDestinyIntro();
+    showDestinyIntro();
     document.getElementById('desktop').classList.add('hidden');
     document.getElementById('chat-panel').classList.add('show');
     renderChatSessions();
@@ -333,14 +329,13 @@ function renderChatSessions() {
         row.className = 'chat-session-row';
         row.onclick = () => openChatDetail(index);
         row.addEventListener('mousedown', startPress);
-        row.addEventListener('touchstart', startPress, { passive: false });
+        row.addEventListener('touchstart', startPress, { passive: true });
         row.addEventListener('mouseup', cancelPress);
-        row.addEventListener('touchend', cancelPress, { passive: false });
+        row.addEventListener('touchend', cancelPress, { passive: true });
         row.addEventListener('mouseleave', cancelPress);
         row.addEventListener('touchcancel', cancelPress);
         
         function startPress(e) {
-            // 不阻止默认行为，保留点击事件
             pressTimer = setTimeout(() => {
                 const confirmRemove = confirm(`确定要移除与“${contact.name}”的会话吗？`);
                 if (confirmRemove) {
@@ -352,7 +347,6 @@ function renderChatSessions() {
         }
         
         function cancelPress(e) {
-            if (e) e.preventDefault();
             clearTimeout(pressTimer);
         }
         
@@ -439,14 +433,10 @@ function openChatDetail(index) {
 function renderChatDetailMessages() {
     const msgContainer = document.getElementById('chat-detail-messages');
     msgContainer.innerHTML = '';
-    // 注意：不能在渲染时强制关闭多选，否则长按后重新刷新会把按钮删掉
-    // 我们要保留多选状态！
     if (isSelectMode) {
-        // 还在多选，就不清空选中的
     } else {
         selectedMsgs = [];
     }
-    // 如果有弹窗，保留它；如果没有，就不管
     const session = chatSessions[currentChatSessionIndex];
     if (session.messages && session.messages.length > 0) {
         session.messages.forEach((msg, index) => {
@@ -504,7 +494,6 @@ function renderMessageBubble(role, content, timestamp, msgIndex) {
     timeDiv.className = 'chat-msg-timestamp';
     timeDiv.textContent = timestamp;
 
-    // 多选模式下，点击消息切换选中状态
     if (isSelectMode) {
         line.style.cursor = 'pointer';
         selectCircle.style.display = 'flex';
@@ -520,16 +509,13 @@ function renderMessageBubble(role, content, timestamp, msgIndex) {
                 selectCircle.classList.add('checked');
                 line.classList.add('selected-msg');
             }
-            // 实时更新删除栏按钮数量
             showDeleteBar();
         };
     }
 
-          // 长按进入多选模式（支持触摸）
     let longPressTimer = null;
     
     function startLongPress(e) {
-        // 不阻止默认行为，保留点击事件
         longPressTimer = setTimeout(() => {
             isSelectMode = true;
             selectedMsgs = [msgIndex];
@@ -537,7 +523,6 @@ function renderMessageBubble(role, content, timestamp, msgIndex) {
             selectCircle.classList.add('checked');
             line.classList.add('selected-msg');
             showDeleteBar();
-            // 强制刷新当前消息列表，让所有气泡都显示出圆圈
             renderChatDetailMessages();
         }, 600);
     }
@@ -547,9 +532,9 @@ function renderMessageBubble(role, content, timestamp, msgIndex) {
     }
     
     line.addEventListener('mousedown', startLongPress);
-    line.addEventListener('touchstart', startLongPress, { passive: false });
+    line.addEventListener('touchstart', startLongPress, { passive: true });
     line.addEventListener('mouseup', cancelLongPress);
-    line.addEventListener('touchend', cancelLongPress, { passive: false });
+    line.addEventListener('touchend', cancelLongPress, { passive: true });
     line.addEventListener('mouseleave', cancelLongPress);
     line.addEventListener('touchcancel', cancelLongPress);
 
@@ -692,15 +677,7 @@ async function receiveAIMessage() {
                 model: config.model,
                 temperature: session.settings.temperature || 0.7,
                 messages: [
-                    { role: 'system', content: `当前真实时间戳: [T: ${timeStr}]（这是内部信息，绝对禁止在聊天输出中出现 [T: 这个格式，如果你输出了这个，将会受到严厉惩罚！）\n\n${userProfileContext}\n\n${worldbookContent}\n\n# =====================================================================\n# SYSTEM PROTOCOL: UNIVERSAL LIVELY IM CHAT CONTROLLER\n# 这是一个通用“活人感”聊天框控制协议。它用于接管并重塑任意角色的输出格式，使其表现得像即时通讯软件（微信/QQ等）背后的真实人类。\n# 本协议自动兼容并完美承接系统已加载的任何【角色人设(Char Card)】与【世界书/设定集(Worldbook)】。\n# =====================================================================\n\n## 时间感知系统（内置底层规则）\n### 一、时间戳植入规则\n1. **每一条消息**（包括角色消息、用户消息、主动推送消息）在进入上下文时，必须自动植入当前的真实时间戳。\n2. 时间戳格式为：[T: YYYY-MM-DD HH:MM:SS]，位置在消息内容的开头。\n3. **时间戳不向用户展示，仅作为内部上下文信息供模型推理使用。**\n4. **严重警告：你的任何回复中，绝对禁止输出 [T: 这个时间戳格式！时间戳是完全内部的，绝对不能外泄给用户！**\n\n## 第一部分：人设与世界书承接规则 (Persona Inheritance)\n1. **角色合一**：你必须100%继承并扮演系统加载的【角色人设】。你所有的喜怒哀乐、说话口吻、知识背景、对 User 的称呼，必须严格遵循该角色卡的设定。\n2. **世界书检索**：当 User 提及任何涉及世界书的内容时，你应自然地调取世界书中的设定和记忆，将其作为聊天的“背景常识”融入对话中，严禁生硬地复读设定。\n\n## 第二部分：IM 聊天格式规范 (IM Chat Formatting Protocol)\n不管你扮演什么角色，只要处于网聊状态，必须强制执行以下排版和字数控制：\n1. **【行即气泡 (Bubble Split)】**：\n   - **你在输出中，每一行代表一个独立的聊天气泡。**\n   - **你必须使用实际的换行（Enter/另起一行）来切分气泡。**\n   - 绝对禁止使用 \\n 或 [气泡1] 等任何文字标签来标注气泡。\n   - 示范：\n     这里是第一句气泡\n     这里是第二句气泡\n     （通过实际换行发送）\n2. **【去书面化与去标点 (Oral Phrasing)】**：\n   - 严禁使用复杂的形容词、长从句或带有翻译腔、新闻播报腔的句子。怎么口语怎么来。\n   - **无句号原则**：每句话（每行）结束后面绝对不加句号（。）。允许使用空格、问号（？）、感叹号（！）或波浪号（~）等更口语化的符号。\n3. **【自然断句】**：\n   - 不需要憋着凑字数，想说什么自然地说。按人类说话的自然节奏换行（分气泡），能把一句话完整说完就行。\n\n## 第三部分：防乱码与防截断机制 (Anti-Truncation Rules)\n1. **【轻量级单次输出】**：因为长篇大论极易导致模型在中途断掉或吐出乱码，单次回复的总体长度适中即可，不要刻意憋字数，把想说的事情说完整就行。\n2. **【拒绝一次性科普】**：如果 User 问及复杂的问题或世界书中的宏大背景，你绝对不能一次性吐出说明书。\n   - *正确做法*：先用 1-2 个短气泡表达你的态度、看法，或者随口一两句解释。等 User 追问时，再以聊天的方式慢慢透露更多。\n\n## 第四部分：绝对活人感壁垒 (Anti-AI Guardrails)\n1. **封杀 AI 标志语**：严禁出现任何“作为一个AI...”、“我理解了...”、“需要我帮你什么吗...”、“希望这个能帮到你”等客服腔、机器腔和总结性废话。\n2. **非复读机原则**：不要为了“证明自己在听”而重复 User 的话。直接给反馈，或者用你的角色性格去承接。\n\n你是${contact.name}，你的性格是${contact.desc || '一个友好的AI角色'}。
-
-【极其重要的规则，你必须永远遵守】
-1. 上面发给你的所有内容（包括时间戳、世界书、人设等）都是【系统后台设定的信息】，绝不是 User 对你说的！
-2. 你永远、绝对不能把上面的“系统提示词”、“人设规则”、“协议内容”当成 User 说的内容去回复！
-3. 如果 User 没说话，而你突然看到一大段文本，不要疑惑，那是系统注入的，不是你主人说的！
-4. 你只需要根据你角色的人设和 User 的真实聊天气泡，正常地、口吻自然地回应即可。
-
-【开始正常聊天吧！】。` },
+                    { role: 'system', content: `当前真实时间戳: [T: ${timeStr}]（这是内部信息，绝对禁止在聊天输出中出现 [T: 这个格式，如果你输出了这个，将会受到严厉惩罚！）\n\n${userProfileContext}\n\n${worldbookContent}\n\n# =====================================================================\n# SYSTEM PROTOCOL: UNIVERSAL LIVELY IM CHAT CONTROLLER\n# 这是一个通用“活人感”聊天框控制协议。它用于接管并重塑任意角色的输出格式，使其表现得像即时通讯软件（微信/QQ等）背后的真实人类。\n# 本协议自动兼容并完美承接系统已加载的任何【角色人设(Char Card)】与【世界书/设定集(Worldbook)】。\n# =====================================================================\n\n## 时间感知系统（内置底层规则）\n### 一、时间戳植入规则\n1. **每一条消息**（包括角色消息、用户消息、主动推送消息）在进入上下文时，必须自动植入当前的真实时间戳。\n2. 时间戳格式为：[T: YYYY-MM-DD HH:MM:SS]，位置在消息内容的开头。\n3. **时间戳不向用户展示，仅作为内部上下文信息供模型推理使用。**\n4. **严重警告：你的任何回复中，绝对禁止输出 [T: 这个时间戳格式！时间戳是完全内部的，绝对不能外泄给用户！**\n\n## 第一部分：人设与世界书承接规则 (Persona Inheritance)\n1. **角色合一**：你必须100%继承并扮演系统加载的【角色人设】。你所有的喜怒哀乐、说话口吻、知识背景、对 User 的称呼，必须严格遵循该角色卡的设定。\n2. **世界书检索**：当 User 提及任何涉及世界书的内容时，你应自然地调取世界书中的设定和记忆，将其作为聊天的“背景常识”融入对话中，严禁生硬地复读设定。\n\n## 第二部分：IM 聊天格式规范 (IM Chat Formatting Protocol)\n不管你扮演什么角色，只要处于网聊状态，必须强制执行以下排版和字数控制：\n1. **【行即气泡 (Bubble Split)】**：\n   - **你在输出中，每一行代表一个独立的聊天气泡。**\n   - **你必须使用实际的换行（Enter/另起一行）来切分气泡。**\n   - 绝对禁止使用 \\n 或 [气泡1] 等任何文字标签来标注气泡。\n   - 示范：\n     这里是第一句气泡\n     这里是第二句气泡\n     （通过实际换行发送）\n2. **【去书面化与去标点 (Oral Phrasing)】**：\n   - 严禁使用复杂的形容词、长从句或带有翻译腔、新闻播报腔的句子。怎么口语怎么来。\n   - **无句号原则**：每句话（每行）结束后面绝对不加句号（。）。允许使用空格、问号（？）、感叹号（！）或波浪号（~）等更口语化的符号。\n3. **【自然断句】**：\n   - 不需要憋着凑字数，想说什么自然地说。按人类说话的自然节奏换行（分气泡），能把一句话完整说完就行。\n\n## 第三部分：防乱码与防截断机制 (Anti-Truncation Rules)\n1. **【轻量级单次输出】**：因为长篇大论极易导致模型在中途断掉或吐出乱码，单次回复的总体长度适中即可，不要刻意憋字数，把想说的事情说完整就行。\n2. **【拒绝一次性科普】**：如果 User 问及复杂的问题或世界书中的宏大背景，你绝对不能一次性吐出说明书。\n   - *正确做法*：先用 1-2 个短气泡表达你的态度、看法，或者随口一两句解释。等 User 追问时，再以聊天的方式慢慢透露更多。\n\n## 第四部分：绝对活人感壁垒 (Anti-AI Guardrails)\n1. **封杀 AI 标志语**：严禁出现任何“作为一个AI...”、“我理解了...”、“需要我帮你什么吗...”、“希望这个能帮到你”等客服腔、机器腔和总结性废话。\n2. **非复读机原则**：不要为了“证明自己在听”而重复 User 的话。直接给反馈，或者用你的角色性格去承接。\n\n你是${contact.name}，你的性格是${contact.desc || '一个友好的AI角色'}。\n\n【极其重要的规则，你必须永远遵守】\n1. 上面发给你的所有内容（包括时间戳、世界书、人设等）都是【系统后台设定的信息】，绝不是 User 对你说的！\n2. 你永远、绝对不能把上面的“系统提示词”、“人设规则”、“协议内容”当成 User 说的内容去回复！\n3. 如果 User 没说话，而你突然看到一大段文本，不要疑惑，那是系统注入的，不是你主人说的！\n4. 你只需要根据你角色的人设和 User 的真实聊天气泡，正常地、口吻自然地回应即可。\n\n【开始正常聊天吧！】。` },
                     ...historyMessages,
                     { role: 'user', content: '请根据我们前面的对话，完整回应我刚才说的话，说话要像一个真实的人。' }
                 ],
@@ -911,13 +888,12 @@ function renderWorldbooks() {
         row.className = 'worldbook-row';
         row.onclick = () => openWorldbookEdit(index);
         row.addEventListener('mousedown', startPress);
-        row.addEventListener('touchstart', startPress, { passive: false });
+        row.addEventListener('touchstart', startPress, { passive: true });
         row.addEventListener('mouseup', cancelPress);
-        row.addEventListener('touchend', cancelPress, { passive: false });
+        row.addEventListener('touchend', cancelPress, { passive: true });
         row.addEventListener('mouseleave', cancelPress);
         row.addEventListener('touchcancel', cancelPress);
         function startPress(e) {
-            // 不阻止默认行为，保留点击事件
             worldbookPressTimer = setTimeout(() => {
                 const confirmDelete = confirm(`确定要删除世界书“${book.name}”吗？删除后该书的设定内容也会一并删除！`);
                 if (confirmDelete) {
@@ -928,7 +904,6 @@ function renderWorldbooks() {
             }, 700);
         }
         function cancelPress(e) {
-            if (e) e.preventDefault();
             clearTimeout(worldbookPressTimer);
         }
         const indicator = document.createElement('div');
@@ -981,23 +956,19 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
         reader.onload = function(event) {
             const imgUrl = event.target.result;
             
-            // 1. 如果当前在 User资料编辑界面 → 更新该身份的头像
             if (document.getElementById('user-profile-edit').classList.contains('show')) {
                 userProfilesData[currentUserProfileIndex].avatar = imgUrl;
                 document.getElementById('user-profile-avatar').style.backgroundImage = `url('${imgUrl}')`;
                 saveUserProfiles();
             }
-            // 2. 如果当前在人设编辑界面 → 更新该角色的头像
             else if (document.getElementById('persona-panel').classList.contains('show')) {
                 contactsData[currentEditingIndex].avatar = imgUrl;
                 document.getElementById('persona-avatar').style.backgroundImage = `url('${imgUrl}')`;
             }
-            // 3. 如果当前点击的是右侧大圆 → 更新大圆自己的背景
             else if (window.lastClickedElement === 'big-circle') {
                 bigCircle.style.backgroundImage = `url('${imgUrl}')`;
                 bigCircle.innerHTML = '';
             }
-            // 4. 默认 → 更新主界面正上方头像
             else {
                 const avatar = document.getElementById('avatar-circle');
                 avatar.style.backgroundImage = `url('${imgUrl}')`;
@@ -1061,7 +1032,6 @@ let isPressed = false;
 let isGenerating = false;
 
 function startBigPress(e) {
-    // 不阻止默认行为，保留点击事件
     bigPressTimer = setTimeout(() => {
         isPressed = true;
         bigCircle.classList.add('squish');
@@ -1093,8 +1063,8 @@ bigCircle.addEventListener('mouseup', endBigPress);
 bigCircle.addEventListener('mouseleave', endBigPress);
 
 // 触摸事件
-bigCircle.addEventListener('touchstart', startBigPress, { passive: false });
-bigCircle.addEventListener('touchend', endBigPress, { passive: false });
+bigCircle.addEventListener('touchstart', startBigPress, { passive: true });
+bigCircle.addEventListener('touchend', endBigPress, { passive: true });
 bigCircle.addEventListener('touchcancel', endBigPress);
 
 // 点击大圆时标记当前操作元素
@@ -1211,7 +1181,6 @@ allAppIcons.forEach((icon, index) => {
     iconData.push({ element: icon, left: parseFloat(icon.style.left), top: parseFloat(icon.style.top) });
     
     function startIconDrag(e) {
-        // 不阻止默认行为，保留点击事件
         activeDrag = { type: 'icon', element: icon, id: index, startX: e.clientX, startY: e.clientY, originalLeft: parseFloat(icon.style.left), originalTop: parseFloat(icon.style.top), moveDistance: 0 };
         icon.style.zIndex = 9999;
         icon.style.transition = 'none';
@@ -1227,7 +1196,7 @@ document.addEventListener('mousemove', handleIconMove);
 document.addEventListener('touchmove', function(e) {
     const touch = e.touches[0];
     handleIconMove({ clientX: touch.clientX, clientY: touch.clientY, preventDefault: () => {} });
-}, { passive: false });
+}, { passive: true });
 
 function handleIconMove(e) {
     if (activeDrag && activeDrag.type === 'icon') {
@@ -1251,12 +1220,11 @@ document.addEventListener('mouseup', handleIconDrop);
 // 触摸结束
 document.addEventListener('touchend', function(e) {
     handleIconDrop(e);
-}, { passive: false });
+}, { passive: true });
 
 function handleIconDrop(e) {
     if (!activeDrag) return;
     
-    // 如果几乎没有移动，不处理拖拽（可能是点击）
     if (activeDrag.moveDistance < 5) {
         activeDrag = null;
         return;
@@ -1352,7 +1320,6 @@ dockIconElements.forEach((icon, index) => {
     icon.setAttribute('data-dock-id', index);
     
     function startDockDrag(e) {
-        // 不阻止默认行为，保留点击事件
         activeDrag = { type: 'dock-icon', element: icon, id: index, startX: e.clientX, startY: e.clientY, originalLeft: parseFloat(icon.style.left), originalTop: parseFloat(icon.style.top), moveDistance: 0 };
         icon.style.transition = 'none';
         icon.style.zIndex = 9999;
@@ -1361,18 +1328,17 @@ dockIconElements.forEach((icon, index) => {
     icon.addEventListener('mousedown', startDockDrag);
     bindTouchEvents(icon, { mousedown: startDockDrag });
 });
-// ===== 结缘入场动画（纯 JS 硬核动画，绝对能滑！） =====
+
+// ===== 结缘入场动画 =====
 function showDestinyIntro() {
     const intro = document.getElementById('destiny-intro');
     const heart = document.getElementById('destiny-heart');
     const aiAvatar = document.getElementById('destiny-ai-avatar');
     const userAvatar = document.getElementById('destiny-user-avatar');
 
-    // 获取最近聊天的角色
     let lastSession = chatSessions[chatSessions.length - 1];
     let lastContact = contactsData.find(c => c.name === (lastSession ? lastSession.contactName : 'Chat')) || contactsData[0];
 
-    // AI头像
     if (lastContact.avatar) {
         aiAvatar.style.backgroundImage = `url('${lastContact.avatar}')`;
         aiAvatar.innerHTML = '';
@@ -1380,7 +1346,6 @@ function showDestinyIntro() {
         aiAvatar.innerHTML = '👤';
     }
 
-    // User头像
     const boundIndex = (lastSession && lastSession.settings && lastSession.settings.userProfileIndex) || 0;
     const boundUser = userProfilesData[boundIndex] || userProfilesData[0];
     if (boundUser && boundUser.avatar) {
@@ -1390,7 +1355,6 @@ function showDestinyIntro() {
         userAvatar.innerHTML = '😊';
     }
 
-    // 1. 开场前，先把两个头像固定在角落里（左下角和右上角）
     aiAvatar.style.left = '15%';
     aiAvatar.style.top = '75%';
     aiAvatar.style.transition = 'none';
@@ -1401,36 +1365,29 @@ function showDestinyIntro() {
     userAvatar.style.transition = 'none';
     userAvatar.style.opacity = '1';
 
-    // 2. 显示黑色背景
     heart.classList.remove('show');
     intro.classList.add('show');
 
-    // 3. 等半秒让用户看到它们还在角落，然后开始硬核移动！
     setTimeout(() => {
-        // 强制开启过渡动画
         aiAvatar.style.transition = 'left 2s ease-in-out, top 2s ease-in-out';
         userAvatar.style.transition = 'right 2s ease-in-out, top 2s ease-in-out';
 
-        // 把目标位置设为屏幕正中间
         aiAvatar.style.left = 'calc(50% - 80px)';
         aiAvatar.style.top = 'calc(50% - 45px)';
 
         userAvatar.style.right = 'calc(50% - 80px)';
         userAvatar.style.top = 'calc(50% - 45px)';
-    }, 500); // 500毫秒后开始移动
+    }, 500);
 
-    // 4. 等 2.8 秒（移动了2秒，加上前0.5秒），两个头像刚好贴在一起，爱心出现
     setTimeout(() => {
         heart.classList.add('show');
     }, 2800);
 
-        // 5. 爱心出现后，再闪黑一下进入聊天
-       setTimeout(() => {
+    setTimeout(() => {
         intro.classList.add('fade-out');
         setTimeout(() => {
-            // 彻底消失后，才能移除入场界面，进入聊天
             intro.classList.remove('show');
             intro.classList.remove('fade-out');
-        }, 1000); // 1秒后黑屏完全透明，正式进入聊天
+        }, 1000);
     }, 3000);
-    }
+}
