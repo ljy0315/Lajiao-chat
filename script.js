@@ -1025,6 +1025,7 @@ function loadFontColor() {
 
 // 加载字体颜色
 loadFontColor();
+
 // ===== 个性化设置 - 壁纸 =====
 document.getElementById('wallpaperInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -1590,7 +1591,7 @@ function handleIconDrop(e) {
         const el = activeDrag.element;
         el.style.transition = 'left 0.25s ease, top 0.25s ease';
         const currentLeft = parseFloat(el.style.left);
-        const originalPositions = [20, 120, 220];
+        const originalPositions = [25, 150, 275];
         let closestIndex = 0;
         let closestDistance = Infinity;
         originalPositions.forEach((pos, index) => {
