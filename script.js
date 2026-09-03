@@ -997,7 +997,34 @@ function saveWorldbook() {
     renderWorldbooks();
     closeWorldbookEdit();
 }
+// ===== 字体颜色设置 =====
+function setFontColor(color) {
+    document.body.classList.remove('font-white');
+    document.body.classList.remove('font-black');
+    
+    if (color === 'white') {
+        document.body.classList.add('font-white');
+        localStorage.setItem('fontColor', 'white');
+    } else if (color === 'black') {
+        document.body.classList.add('font-black');
+        localStorage.setItem('fontColor', 'black');
+    }
+    
+    showToast('字体颜色已更新');
+}
 
+// 加载保存的字体颜色
+function loadFontColor() {
+    try {
+        const saved = localStorage.getItem('fontColor');
+        if (saved) {
+            setFontColor(saved);
+        }
+    } catch(e) {}
+}
+
+// 加载字体颜色
+loadFontColor();
 // ===== 个性化设置 - 壁纸 =====
 document.getElementById('wallpaperInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -1563,7 +1590,7 @@ function handleIconDrop(e) {
         const el = activeDrag.element;
         el.style.transition = 'left 0.25s ease, top 0.25s ease';
         const currentLeft = parseFloat(el.style.left);
-        const originalPositions = [15, 94, 173];
+        const originalPositions = [20, 120, 220];
         let closestIndex = 0;
         let closestDistance = Infinity;
         originalPositions.forEach((pos, index) => {
