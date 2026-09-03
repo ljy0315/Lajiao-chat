@@ -225,19 +225,19 @@ body {
 #dock {
     position: absolute;
     left: 50%;
-    bottom: 5%;
+    bottom: 4%;
     transform: translateX(-50%);
-    width: 70%;
-    max-width: 280px;
-    height: 65px;
+    width: 85%;
+    max-width: 360px;
+    height: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 15px;
+    gap: 18px;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
+    border-radius: 24px;
     z-index: 200;
     cursor: default;
 }
@@ -246,8 +246,8 @@ body {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border: 1px solid #fff;
     border-radius: 12px;
     background: #000;
@@ -264,7 +264,7 @@ body {
 
 .dock-app-icon:active { transform: translateY(-50%) scale(0.88); }
 .dock-app-icon:hover { background: #fff; color: #000; }
-.dock-app-icon svg { width: 24px; height: 24px; fill: currentColor; }
+.dock-app-icon svg { width: 28px; height: 28px; fill: currentColor; }
 
 #status-bar {
     position: absolute;
@@ -1562,4 +1562,86 @@ input, textarea, select {
 
 .icon-custom-btn.has-custom-icon span {
     display: none;
+}
+/* ===== 图标自定义按钮样式 ===== */
+.icon-custom-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 5px;
+}
+
+.icon-custom-btn:hover {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.05);
+}
+
+.icon-custom-btn:active {
+    transform: scale(0.95);
+}
+
+.icon-custom-btn span:first-child {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.icon-custom-btn span:last-child {
+    font-size: 11px;
+    color: #fff;
+    text-align: center;
+}
+
+.icon-custom-btn.has-custom-icon {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.icon-custom-btn.has-custom-icon span {
+    display: none;
+}
+
+/* 壁纸适配手机 */
+#desktop {
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+/* 字体颜色样式 */
+body.font-white,
+body.font-white .app-label,
+body.font-white .chat-title,
+body.font-white .user-wall-title,
+body.font-white .settings-header h3,
+body.font-white .contacts-header h3,
+body.font-white .persona-header h3,
+body.font-white .worldbook-title,
+body.font-white .chat-session-name,
+body.font-white .contact-name-input,
+body.font-white .persona-input-group label,
+body.font-white .input-group label {
+    color: #fff !important;
+}
+
+body.font-black,
+body.font-black .app-label,
+body.font-black .chat-title,
+body.font-black .user-wall-title,
+body.font-black .settings-header h3,
+body.font-black .contacts-header h3,
+body.font-black .persona-header h3,
+body.font-black .worldbook-title,
+body.font-black .chat-session-name,
+body.font-black .contact-name-input,
+body.font-black .persona-input-group label,
+body.font-black .input-group label {
+    color: #000 !important;
 }
