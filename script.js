@@ -91,16 +91,18 @@ function renderContacts() {
     contactsData.forEach((contact, index) => {
         const row = document.createElement('div');
         row.className = 'contact-row';
-        row.onclick = () => openPersona(index);
-        row.addEventListener('mousedown', startPress);
-        row.addEventListener('touchstart', startPress, { passive: true });
-        row.addEventListener('mouseup', cancelPress);
-        row.addEventListener('touchend', cancelPress, { passive: true });
-        row.addEventListener('mouseleave', cancelPress);
-        row.addEventListener('touchcancel', cancelPress);
-
+        
+        // 点击打开人设
+        row.addEventListener('click', () => openPersona(index));
+        
+        // 长按删除
+        let pressTimer = null;
+        let isLongPress = false;
+        
         function startPress(e) {
+            isLongPress = false;
             pressTimer = setTimeout(() => {
+                isLongPress = true;
                 const confirmDelete = confirm(`确定要删除角色“${contact.name}”吗？删除后其对应的人设资料也会一并删除！`);
                 if (confirmDelete) {
                     contactsData.splice(index, 1);
@@ -112,7 +114,18 @@ function renderContacts() {
 
         function cancelPress(e) {
             clearTimeout(pressTimer);
+            // 如果是长按，阻止点击事件
+            if (isLongPress) {
+                e.stopPropagation();
+            }
         }
+        
+        row.addEventListener('mousedown', startPress);
+        row.addEventListener('touchstart', startPress, { passive: true });
+        row.addEventListener('mouseup', cancelPress);
+        row.addEventListener('touchend', cancelPress, { passive: true });
+        row.addEventListener('mouseleave', cancelPress);
+        row.addEventListener('touchcancel', cancelPress);
 
         const avatar = document.createElement('div');
         avatar.className = 'contact-avatar';
@@ -200,16 +213,18 @@ function renderUserProfiles() {
     userProfilesData.forEach((profile, index) => {
         const note = document.createElement('div');
         note.className = 'user-note-card';
-        note.onclick = () => openUserProfileEdit(index);
-        note.addEventListener('mousedown', startPress);
-        note.addEventListener('touchstart', startPress, { passive: true });
-        note.addEventListener('mouseup', cancelPress);
-        note.addEventListener('touchend', cancelPress, { passive: true });
-        note.addEventListener('mouseleave', cancelPress);
-        note.addEventListener('touchcancel', cancelPress);
-
+        
+        // 点击打开编辑
+        note.addEventListener('click', () => openUserProfileEdit(index));
+        
+        // 长按删除
+        let pressTimer = null;
+        let isLongPress = false;
+        
         function startPress(e) {
+            isLongPress = false;
             pressTimer = setTimeout(() => {
+                isLongPress = true;
                 const confirmDelete = confirm(`确定要删除身份“${profile.name}”吗？`);
                 if (confirmDelete) {
                     userProfilesData.splice(index, 1);
@@ -221,7 +236,17 @@ function renderUserProfiles() {
 
         function cancelPress(e) {
             clearTimeout(pressTimer);
+            if (isLongPress) {
+                e.stopPropagation();
+            }
         }
+        
+        note.addEventListener('mousedown', startPress);
+        note.addEventListener('touchstart', startPress, { passive: true });
+        note.addEventListener('mouseup', cancelPress);
+        note.addEventListener('touchend', cancelPress, { passive: true });
+        note.addEventListener('mouseleave', cancelPress);
+        note.addEventListener('touchcancel', cancelPress);
 
         const tape = document.createElement('div');
         tape.className = 'user-note-tape';
@@ -327,16 +352,18 @@ function renderChatSessions() {
         const contact = contactsData.find(c => c.name === session.contactName) || session;
         const row = document.createElement('div');
         row.className = 'chat-session-row';
-        row.onclick = () => openChatDetail(index);
-        row.addEventListener('mousedown', startPress);
-        row.addEventListener('touchstart', startPress, { passive: true });
-        row.addEventListener('mouseup', cancelPress);
-        row.addEventListener('touchend', cancelPress, { passive: true });
-        row.addEventListener('mouseleave', cancelPress);
-        row.addEventListener('touchcancel', cancelPress);
+        
+        // 点击打开聊天
+        row.addEventListener('click', () => openChatDetail(index));
+        
+        // 长按删除
+        let pressTimer = null;
+        let isLongPress = false;
         
         function startPress(e) {
+            isLongPress = false;
             pressTimer = setTimeout(() => {
+                isLongPress = true;
                 const confirmRemove = confirm(`确定要移除与“${contact.name}”的会话吗？`);
                 if (confirmRemove) {
                     chatSessions.splice(index, 1);
@@ -348,7 +375,17 @@ function renderChatSessions() {
         
         function cancelPress(e) {
             clearTimeout(pressTimer);
+            if (isLongPress) {
+                e.stopPropagation();
+            }
         }
+        
+        row.addEventListener('mousedown', startPress);
+        row.addEventListener('touchstart', startPress, { passive: true });
+        row.addEventListener('mouseup', cancelPress);
+        row.addEventListener('touchend', cancelPress, { passive: true });
+        row.addEventListener('mouseleave', cancelPress);
+        row.addEventListener('touchcancel', cancelPress);
         
         const avatar = document.createElement('div');
         avatar.className = 'chat-session-avatar';
@@ -886,15 +923,18 @@ function renderWorldbooks() {
     worldbooksData.forEach((book, index) => {
         const row = document.createElement('div');
         row.className = 'worldbook-row';
-        row.onclick = () => openWorldbookEdit(index);
-        row.addEventListener('mousedown', startPress);
-        row.addEventListener('touchstart', startPress, { passive: true });
-        row.addEventListener('mouseup', cancelPress);
-        row.addEventListener('touchend', cancelPress, { passive: true });
-        row.addEventListener('mouseleave', cancelPress);
-        row.addEventListener('touchcancel', cancelPress);
+        
+        // 点击打开编辑
+        row.addEventListener('click', () => openWorldbookEdit(index));
+        
+        // 长按删除
+        let pressTimer = null;
+        let isLongPress = false;
+        
         function startPress(e) {
-            worldbookPressTimer = setTimeout(() => {
+            isLongPress = false;
+            pressTimer = setTimeout(() => {
+                isLongPress = true;
                 const confirmDelete = confirm(`确定要删除世界书“${book.name}”吗？删除后该书的设定内容也会一并删除！`);
                 if (confirmDelete) {
                     worldbooksData.splice(index, 1);
@@ -904,8 +944,18 @@ function renderWorldbooks() {
             }, 700);
         }
         function cancelPress(e) {
-            clearTimeout(worldbookPressTimer);
+            clearTimeout(pressTimer);
+            if (isLongPress) {
+                e.stopPropagation();
+            }
         }
+        
+        row.addEventListener('mousedown', startPress);
+        row.addEventListener('touchstart', startPress, { passive: true });
+        row.addEventListener('mouseup', cancelPress);
+        row.addEventListener('touchend', cancelPress, { passive: true });
+        row.addEventListener('mouseleave', cancelPress);
+        row.addEventListener('touchcancel', cancelPress);
         const indicator = document.createElement('div');
         indicator.className = 'worldbook-toggle-indicator';
         if (book.isOpen) indicator.classList.add('on');
