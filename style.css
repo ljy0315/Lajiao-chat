@@ -127,7 +127,6 @@ body {
     align-items: center;
     justify-content: center;
     gap: 6px;
-    transition: left 0.2s ease, top 0.2s ease;
 }
 
 .app-icon {
@@ -151,121 +150,6 @@ body {
 .app-icon:hover { background-color: #fff; color: #000; }
 .app-icon svg { width: 24px; height: 24px; fill: currentColor; }
 .app-label { font-size: 11px; font-weight: bold; color: #fff; text-align: center; }
-
-#big-circle {
-    position: absolute;
-    right: 8%;
-    top: 43%;
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px dashed rgba(255, 255, 255, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #aaa;
-    font-size: 12px;
-    text-align: center;
-    cursor: pointer;
-    overflow: hidden;
-    z-index: 200;
-    background-size: cover;
-    background-position: center;
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-#big-circle.squish { transform: scaleY(0.75) scaleX(1.05); }
-#big-circle.squish-release { transform: scaleY(1.1) scaleX(0.95); }
-
-#bubble-popup {
-    position: absolute;
-    right: 4%;     
-    top: 69%;      
-    width: 130px;  
-    min-height: 45px;
-    max-height: 250px;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 60px;
-    padding: 10px 15px;
-    color: #fff;
-    font-size: 12px;
-    line-height: 1.4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    z-index: 300;
-    opacity: 0;
-    transform: translateY(12px) scale(0.95);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    pointer-events: none;
-}
-
-#bubble-popup.show {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-}
-
-.bubble-loader {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top: 2px solid #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-#dock {
-    position: absolute;
-    left: 50%;
-    bottom: 4%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 400px;
-    height: 130px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 32px;
-    z-index: 200;
-    cursor: default;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-}
-
-.dock-app-icon {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 60px !important;
-    height: 60px !important;
-    border: 1px solid #fff;
-    border-radius: 14px;
-    background: #000;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: left 0.2s ease, top 0.2s ease;
-    z-index: 300;
-    background-size: cover;
-    background-position: center;
-}
-
-.dock-app-icon:active { transform: translateY(-50%) scale(0.88); }
-.dock-app-icon:hover { background: #fff; color: #000; }
-.dock-app-icon svg { width: 28px !important; height: 28px !important; fill: currentColor; }
 
 #status-bar {
     position: absolute;
@@ -1429,6 +1313,59 @@ input:checked + .slider:before { transform: translateX(22px); }
     #desktop {
         border-radius: 0;
     }
+    
+    #icon-area {
+        top: 45% !important;
+        left: 20px !important;
+    }
+
+    .app-wrapper {
+        scale: 0.9;
+    }
+
+    #status-bar {
+        height: 28px !important;
+        font-size: 11px !important;
+        padding: 0 12px !important;
+    }
+
+    #avatar-circle {
+        width: 60px !important;
+        height: 60px !important;
+        top: 7% !important;
+    }
+
+    #profile-card {
+        top: 14% !important;
+        height: 120px !important;
+    }
+
+    /* Dock 栏 - 缩小间距 */
+    #dock {
+        width: 85%;
+        max-width: 300px;
+        height: 65px;
+        bottom: 3%;
+        border-radius: 20px;
+        gap: 8px;
+        padding: 0 10px;
+        justify-content: space-around;
+    }
+
+    .dock-app-icon {
+        position: relative !important;
+        top: auto !important;
+        transform: none !important;
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 12px;
+        flex-shrink: 0;
+    }
+
+    .dock-app-icon svg {
+        width: 22px !important;
+        height: 22px !important;
+    }
 }
 
 /* 触摸优化 */
@@ -1462,59 +1399,6 @@ input, textarea, select {
     user-select: none !important;
 }
 
-#icon-area {
-    top: 45% !important;
-    left: 20px !important;
-}
-
-.app-wrapper {
-    scale: 0.9;
-}
-
-#big-circle {
-    right: 5% !important;
-    top: 40% !important;
-    width: 110px !important;
-    height: 110px !important;
-}
-
-#bubble-popup {
-    right: 2% !important;
-    top: 65% !important;
-    width: 110px !important;
-}
-
-#status-bar {
-    height: 28px !important;
-    font-size: 11px !important;
-    padding: 0 12px !important;
-}
-
-#avatar-circle {
-    width: 60px !important;
-    height: 60px !important;
-    top: 7% !important;
-}
-
-#profile-card {
-    top: 14% !important;
-    height: 120px !important;
-}
-
-#dock {
-    bottom: 3% !important;
-    height: 50px !important;
-}
-
-.dock-app-icon {
-    width: 36px !important;
-    height: 36px !important;
-}
-
-#delete-bar {
-    width: 85% !important;
-    max-width: 300px !important;
-}
 /* ===== 图标自定义按钮样式 ===== */
 .icon-custom-btn {
     display: flex;
@@ -1599,56 +1483,57 @@ body.font-black .input-group label {
     color: #000 !important;
 }
 
-/* ===== Dock 栏放大（强制覆盖） ===== */
+/* ===== Dock 栏（桌面端） ===== */
 #dock {
     position: absolute;
     left: 50%;
     bottom: 4%;
     transform: translateX(-50%);
-    width: 90%;
-    max-width: 380px;
-    height: 100px;
+    width: 55%;
+    max-width: 340px;
+    height: 75px;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    gap: 20px;
+    padding: 0 20px;
     background: rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 28px;
+    border-radius: 24px;
     z-index: 200;
     cursor: default;
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    gap: 10px;
 }
 
 .dock-app-icon {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 60px !important;
-    height: 60px !important;
+    position: relative !important;
+    top: auto !important;
+    transform: none !important;
+    width: 52px !important;
+    height: 52px !important;
     border: 1px solid #fff;
-    border-radius: 12px;
+    border-radius: 14px;
     background: #000;
     color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: left 0.2s ease, top 0.2s ease;
-    z-index: 300;
+    flex-shrink: 0;
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
 }
 
 .dock-app-icon svg {
-    width: 28px !important;
-    height: 28px !important;
+    width: 26px !important;
+    height: 26px !important;
     fill: currentColor;
 }
 
 .dock-app-icon:active {
-    transform: translateY(-50%) scale(0.88);
+    transform: scale(0.88) !important;
 }
 
 .dock-app-icon:hover {
@@ -1671,25 +1556,26 @@ body.font-black .input-group label {
         font-size: 13px !important;
     }
     
-       /* Dock 栏适配 */
+    /* Dock 栏适配 */
     #dock {
-        width: 92%;
-        max-width: 360px;
-        height: 100px;
+        width: 75%;
+        max-width: 280px;
+        height: 58px;
         bottom: 3%;
-        border-radius: 28px;
-        gap: 15px;
+        border-radius: 18px;
+        padding: 0 12px;
+        gap: 6px;
     }
     
     .dock-app-icon {
-        width: 55px !important;
-        height: 55px !important;
-        border-radius: 14px;
+        width: 42px !important;
+        height: 42px !important;
+        border-radius: 12px;
     }
     
     .dock-app-icon svg {
-        width: 26px !important;
-        height: 26px !important;
+        width: 20px !important;
+        height: 20px !important;
     }
     
     /* 图标按钮适配 */
