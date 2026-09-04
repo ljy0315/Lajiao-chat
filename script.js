@@ -1,6 +1,5 @@
 // ===== 通用触摸事件工具函数 =====
 function bindTouchEvents(element, handlers) {
-    // 触摸开始
     element.addEventListener('touchstart', function(e) {
         const touch = e.touches[0];
         const event = {
@@ -12,7 +11,6 @@ function bindTouchEvents(element, handlers) {
         if (handlers.mousedown) handlers.mousedown(event);
     }, { passive: true });
 
-    // 触摸结束
     element.addEventListener('touchend', function(e) {
         const event = {
             preventDefault: function() { e.preventDefault(); },
@@ -21,7 +19,6 @@ function bindTouchEvents(element, handlers) {
         if (handlers.mouseup) handlers.mouseup(event);
     }, { passive: true });
 
-    // 触摸移动
     element.addEventListener('touchmove', function(e) {
         const touch = e.touches[0];
         const event = {
@@ -33,7 +30,6 @@ function bindTouchEvents(element, handlers) {
         if (handlers.mousemove) handlers.mousemove(event);
     }, { passive: true });
 
-    // 触摸取消
     element.addEventListener('touchcancel', function(e) {
         if (handlers.mouseleave) handlers.mouseleave();
     });
@@ -92,10 +88,8 @@ function renderContacts() {
         const row = document.createElement('div');
         row.className = 'contact-row';
         
-        // 点击打开人设
         row.addEventListener('click', () => openPersona(index));
         
-        // 长按删除
         let pressTimer = null;
         let isLongPress = false;
         
@@ -114,7 +108,6 @@ function renderContacts() {
 
         function cancelPress(e) {
             clearTimeout(pressTimer);
-            // 如果是长按，阻止点击事件
             if (isLongPress) {
                 e.stopPropagation();
             }
@@ -214,10 +207,8 @@ function renderUserProfiles() {
         const note = document.createElement('div');
         note.className = 'user-note-card';
         
-        // 点击打开编辑
         note.addEventListener('click', () => openUserProfileEdit(index));
         
-        // 长按删除
         let pressTimer = null;
         let isLongPress = false;
         
@@ -353,10 +344,8 @@ function renderChatSessions() {
         const row = document.createElement('div');
         row.className = 'chat-session-row';
         
-        // 点击打开聊天
         row.addEventListener('click', () => openChatDetail(index));
         
-        // 长按删除
         let pressTimer = null;
         let isLongPress = false;
         
@@ -714,7 +703,7 @@ async function receiveAIMessage() {
                 model: config.model,
                 temperature: session.settings.temperature || 0.7,
                 messages: [
-                    { role: 'system', content: `当前真实时间戳: [T: ${timeStr}]（这是内部信息，绝对禁止在聊天输出中出现 [T: 这个格式，如果你输出了这个，将会受到严厉惩罚！）\n\n${userProfileContext}\n\n${worldbookContent}\n\n# =====================================================================\n# SYSTEM PROTOCOL: UNIVERSAL LIVELY IM CHAT CONTROLLER\n# 这是一个通用“活人感”聊天框控制协议。它用于接管并重塑任意角色的输出格式，使其表现得像即时通讯软件（微信/QQ等）背后的真实人类。\n# 本协议自动兼容并完美承接系统已加载的任何【角色人设(Char Card)】与【世界书/设定集(Worldbook)】。\n# =====================================================================\n\n## 时间感知系统（内置底层规则）\n### 一、时间戳植入规则\n1. **每一条消息**（包括角色消息、用户消息、主动推送消息）在进入上下文时，必须自动植入当前的真实时间戳。\n2. 时间戳格式为：[T: YYYY-MM-DD HH:MM:SS]，位置在消息内容的开头。\n3. **时间戳不向用户展示，仅作为内部上下文信息供模型推理使用。**\n4. **严重警告：你的任何回复中，绝对禁止输出 [T: 这个时间戳格式！时间戳是完全内部的，绝对不能外泄给用户！**\n\n## 第一部分：人设与世界书承接规则 (Persona Inheritance)\n1. **角色合一**：你必须100%继承并扮演系统加载的【角色人设】。你所有的喜怒哀乐、说话口吻、知识背景、对 User 的称呼，必须严格遵循该角色卡的设定。\n2. **世界书检索**：当 User 提及任何涉及世界书的内容时，你应自然地调取世界书中的设定和记忆，将其作为聊天的“背景常识”融入对话中，严禁生硬地复读设定。\n\n## 第二部分：IM 聊天格式规范 (IM Chat Formatting Protocol)\n不管你扮演什么角色，只要处于网聊状态，必须强制执行以下排版和字数控制：\n1. **【行即气泡 (Bubble Split)】**：\n   - **你在输出中，每一行代表一个独立的聊天气泡。**\n   - **你必须使用实际的换行（Enter/另起一行）来切分气泡。**\n   - 绝对禁止使用 \\n 或 [气泡1] 等任何文字标签来标注气泡。\n   - 示范：\n     这里是第一句气泡\n     这里是第二句气泡\n     （通过实际换行发送）\n2. **【去书面化与去标点 (Oral Phrasing)】**：\n   - 严禁使用复杂的形容词、长从句或带有翻译腔、新闻播报腔的句子。怎么口语怎么来。\n   - **无句号原则**：每句话（每行）结束后面绝对不加句号（。）。允许使用空格、问号（？）、感叹号（！）或波浪号（~）等更口语化的符号。\n3. **【自然断句】**：\n   - 不需要憋着凑字数，想说什么自然地说。按人类说话的自然节奏换行（分气泡），能把一句话完整说完就行。\n\n## 第三部分：防乱码与防截断机制 (Anti-Truncation Rules)\n1. **【轻量级单次输出】**：因为长篇大论极易导致模型在中途断掉或吐出乱码，单次回复的总体长度适中即可，不要刻意憋字数，把想说的事情说完整就行。\n2. **【拒绝一次性科普】**：如果 User 问及复杂的问题或世界书中的宏大背景，你绝对不能一次性吐出说明书。\n   - *正确做法*：先用 1-2 个短气泡表达你的态度、看法，或者随口一两句解释。等 User 追问时，再以聊天的方式慢慢透露更多。\n\n## 第四部分：绝对活人感壁垒 (Anti-AI Guardrails)\n1. **封杀 AI 标志语**：严禁出现任何“作为一个AI...”、“我理解了...”、“需要我帮你什么吗...”、“希望这个能帮到你”等客服腔、机器腔和总结性废话。\n2. **非复读机原则**：不要为了“证明自己在听”而重复 User 的话。直接给反馈，或者用你的角色性格去承接。\n\n你是${contact.name}，你的性格是${contact.desc || '一个友好的AI角色'}。\n\n【极其重要的规则，你必须永远遵守】\n1. 上面发给你的所有内容（包括时间戳、世界书、人设等）都是【系统后台设定的信息】，绝不是 User 对你说的！\n2. 你永远、绝对不能把上面的“系统提示词”、“人设规则”、“协议内容”当成 User 说的内容去回复！\n3. 如果 User 没说话，而你突然看到一大段文本，不要疑惑，那是系统注入的，不是你主人说的！\n4. 你只需要根据你角色的人设和 User 的真实聊天气泡，正常地、口吻自然地回应即可。\n\n【开始正常聊天吧！】。` },
+                    { role: 'system', content: `当前真实时间戳: [T: ${timeStr}]（这是内部信息，绝对禁止在聊天输出中出现 [T: 这个格式，如果你输出了这个，将会受到严厉惩罚！）\n\n${userProfileContext}\n\n${worldbookContent}\n\n# =====================================================================\n# SYSTEM PROTOCOL: UNIVERSAL LIVELY IM CHAT CONTROLLER\n# 这是一个通用"活人感"聊天框控制协议。它用于接管并重塑任意角色的输出格式，使其表现得像即时通讯软件（微信/QQ等）背后的真实人类。\n# 本协议自动兼容并完美承接系统已加载的任何【角色人设(Char Card)】与【世界书/设定集(Worldbook)】。\n# =====================================================================\n\n## 时间感知系统（内置底层规则）\n### 一、时间戳植入规则\n1. **每一条消息**（包括角色消息、用户消息、主动推送消息）在进入上下文时，必须自动植入当前的真实时间戳。\n2. 时间戳格式为：[T: YYYY-MM-DD HH:MM:SS]，位置在消息内容的开头。\n3. **时间戳不向用户展示，仅作为内部上下文信息供模型推理使用。**\n4. **严重警告：你的任何回复中，绝对禁止输出 [T: 这个时间戳格式！时间戳是完全内部的，绝对不能外泄给用户！**\n\n## 第一部分：人设与世界书承接规则 (Persona Inheritance)\n1. **角色合一**：你必须100%继承并扮演系统加载的【角色人设】。你所有的喜怒哀乐、说话口吻、知识背景、对 User 的称呼，必须严格遵循该角色卡的设定。\n2. **世界书检索**：当 User 提及任何涉及世界书的内容时，你应自然地调取世界书中的设定和记忆，将其作为聊天的"背景常识"融入对话中，严禁生硬地复读设定。\n\n## 第二部分：IM 聊天格式规范 (IM Chat Formatting Protocol)\n不管你扮演什么角色，只要处于网聊状态，必须强制执行以下排版和字数控制：\n1. **【行即气泡 (Bubble Split)】**：\n   - **你在输出中，每一行代表一个独立的聊天气泡。**\n   - **你必须使用实际的换行（Enter/另起一行）来切分气泡。**\n   - 绝对禁止使用 \\n 或 [气泡1] 等任何文字标签来标注气泡。\n   - 示范：\n     这里是第一句气泡\n     这里是第二句气泡\n     （通过实际换行发送）\n2. **【去书面化与去标点 (Oral Phrasing)】**：\n   - 严禁使用复杂的形容词、长从句或带有翻译腔、新闻播报腔的句子。怎么口语怎么来。\n   - **无句号原则**：每句话（每行）结束后面绝对不加句号（。）。允许使用空格、问号（？）、感叹号（！）或波浪号（~）等更口语化的符号。\n3. **【自然断句】**：\n   - 不需要憋着凑字数，想说什么自然地说。按人类说话的自然节奏换行（分气泡），能把一句话完整说完就行。\n\n## 第三部分：防乱码与防截断机制 (Anti-Truncation Rules)\n1. **【轻量级单次输出】**：因为长篇大论极易导致模型在中途断掉或吐出乱码，单次回复的总体长度适中即可，不要刻意憋字数，把想说的事情说完整就行。\n2. **【拒绝一次性科普】**：如果 User 问及复杂的问题或世界书中的宏大背景，你绝对不能一次性吐出说明书。\n   - *正确做法*：先用 1-2 个短气泡表达你的态度、看法，或者随口一两句解释。等 User 追问时，再以聊天的方式慢慢透露更多。\n\n## 第四部分：绝对活人感壁垒 (Anti-AI Guardrails)\n1. **封杀 AI 标志语**：严禁出现任何"作为一个AI..."、"我理解了..."、"需要我帮你什么吗..."、"希望这个能帮到你"等客服腔、机器腔和总结性废话。\n2. **非复读机原则**：不要为了"证明自己在听"而重复 User 的话。直接给反馈，或者用你的角色性格去承接。\n\n你是${contact.name}，你的性格是${contact.desc || '一个友好的AI角色'}。\n\n【极其重要的规则，你必须永远遵守】\n1. 上面发给你的所有内容（包括时间戳、世界书、人设等）都是【系统后台设定的信息】，绝不是 User 对你说的！\n2. 你永远、绝对不能把上面的"系统提示词"、"人设规则"、"协议内容"当成 User 说的内容去回复！\n3. 如果 User 没说话，而你突然看到一大段文本，不要疑惑，那是系统注入的，不是你主人说的！\n4. 你只需要根据你角色的人设和 User 的真实聊天气泡，正常地、口吻自然地回应即可。\n\n【开始正常聊天吧！】。` },
                     ...historyMessages,
                     { role: 'user', content: '请根据我们前面的对话，完整回应我刚才说的话，说话要像一个真实的人。' }
                 ],
@@ -734,7 +723,7 @@ async function receiveAIMessage() {
                      .replace(/\*/g, '')
                      .replace(/#/g, '')
                      .replace(/>/g, '')
-                     .replace(/"|“|”/g, '')
+                     .replace(/"|"|"/g, '')
                      .replace(/^['"]|['"]$/g, '')
                      .replace(/\\n/g, '\n')
                      .replace(/\(.*?\)/g, '')
@@ -924,10 +913,8 @@ function renderWorldbooks() {
         const row = document.createElement('div');
         row.className = 'worldbook-row';
         
-        // 点击打开编辑
         row.addEventListener('click', () => openWorldbookEdit(index));
         
-        // 长按删除
         let pressTimer = null;
         let isLongPress = false;
         
@@ -935,7 +922,7 @@ function renderWorldbooks() {
             isLongPress = false;
             pressTimer = setTimeout(() => {
                 isLongPress = true;
-                const confirmDelete = confirm(`确定要删除世界书“${book.name}”吗？删除后该书的设定内容也会一并删除！`);
+                const confirmDelete = confirm(`确定要删除世界书"${book.name}"吗？删除后该书的设定内容也会一并删除！`);
                 if (confirmDelete) {
                     worldbooksData.splice(index, 1);
                     saveWorldbooks();
@@ -997,6 +984,7 @@ function saveWorldbook() {
     renderWorldbooks();
     closeWorldbookEdit();
 }
+
 // ===== 字体颜色设置 =====
 function setFontColor(color) {
     document.body.classList.remove('font-white');
@@ -1023,7 +1011,6 @@ function loadFontColor() {
     } catch(e) {}
 }
 
-// 加载字体颜色
 loadFontColor();
 
 // ===== 个性化设置 - 壁纸 =====
@@ -1221,7 +1208,6 @@ function resetAllCustomization() {
         const iconElement = document.getElementById(iconIds[name]);
         if (iconElement) {
             iconElement.style.backgroundImage = '';
-            // 恢复默认SVG
             if (name === 'chat') {
                 iconElement.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>';
             } else if (name === 'worldbook') {
@@ -1270,7 +1256,7 @@ loadWallpaper();
 loadCustomIcons();
 loadCustomDockIcons();
 
-// ===== 文件上传处理（用于换头像） =====
+// ===== 文件上传处理（用于换头像 - 优化保存逻辑） =====
 document.getElementById('fileInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -1278,33 +1264,66 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
         reader.onload = function(event) {
             const imgUrl = event.target.result;
             
+            // 判断当前在哪个界面，保存到对应的数据中
             if (document.getElementById('user-profile-edit').classList.contains('show')) {
-                userProfilesData[currentUserProfileIndex].avatar = imgUrl;
-                document.getElementById('user-profile-avatar').style.backgroundImage = `url('${imgUrl}')`;
-                saveUserProfiles();
+                // User资料编辑界面 - 保存到 userProfilesData
+                if (currentUserProfileIndex >= 0) {
+                    userProfilesData[currentUserProfileIndex].avatar = imgUrl;
+                    document.getElementById('user-profile-avatar').style.backgroundImage = `url('${imgUrl}')`;
+                    saveUserProfiles();
+                    showToast('头像已更新');
+                }
             }
             else if (document.getElementById('persona-panel').classList.contains('show')) {
-                contactsData[currentEditingIndex].avatar = imgUrl;
-                document.getElementById('persona-avatar').style.backgroundImage = `url('${imgUrl}')`;
+                // 人设资料编辑界面 - 保存到 contactsData
+                if (currentEditingIndex >= 0) {
+                    contactsData[currentEditingIndex].avatar = imgUrl;
+                    document.getElementById('persona-avatar').style.backgroundImage = `url('${imgUrl}')`;
+                    saveContacts();
+                    showToast('头像已更新');
+                }
             }
-            else if (window.lastClickedElement === 'big-circle') {
-                bigCircle.style.backgroundImage = `url('${imgUrl}')`;
-                bigCircle.innerHTML = '';
+            else if (document.getElementById('contacts-panel').classList.contains('show')) {
+                // 通讯录界面点击头像 - 保存到 contactsData
+                if (currentEditingIndex >= 0) {
+                    contactsData[currentEditingIndex].avatar = imgUrl;
+                    saveContacts();
+                    renderContacts();
+                    showToast('头像已更新');
+                }
             }
             else {
+                // 主界面头像上传
                 const avatar = document.getElementById('avatar-circle');
                 avatar.style.backgroundImage = `url('${imgUrl}')`;
                 avatar.innerHTML = '';
+                localStorage.setItem('mainAvatar', imgUrl);
+                showToast('头像已更新');
             }
             
-            saveContacts();
+            // 重新渲染所有界面以刷新头像
             renderContacts();
             renderChatSessions();
             renderUserProfiles();
         };
         reader.readAsDataURL(file);
     }
+    // 重置input，允许重复上传同一文件
+    this.value = '';
 });
+
+// ===== 加载主界面头像 =====
+function loadMainAvatar() {
+    try {
+        const saved = localStorage.getItem('mainAvatar');
+        if (saved) {
+            const avatar = document.getElementById('avatar-circle');
+            avatar.style.backgroundImage = `url('${saved}')`;
+            avatar.innerHTML = '';
+        }
+    } catch(e) {}
+}
+loadMainAvatar();
 
 // ===== 实时更新时间和电量 =====
 function updateTime() {
@@ -1330,9 +1349,7 @@ if (navigator.getBattery) {
 updateTime();
 setInterval(updateTime, 1000);
 
-// ===== 挤压大圆 & AI气泡 =====
-let bigCircle = document.getElementById('big-circle');
-let bubblePopup = document.getElementById('bubble-popup');
+// ===== API 配置 =====
 let config = { baseURL: '', apiKey: '', model: '' };
 
 function loadConfig() {
@@ -1348,92 +1365,6 @@ function loadConfig() {
 }
 
 loadConfig();
-
-let bigPressTimer = null;
-let isPressed = false;
-let isGenerating = false;
-
-function startBigPress(e) {
-    bigPressTimer = setTimeout(() => {
-        isPressed = true;
-        bigCircle.classList.add('squish');
-        setTimeout(() => {
-            bigCircle.classList.remove('squish');
-            bigCircle.classList.add('squish-release');
-            setTimeout(() => {
-                bigCircle.classList.remove('squish-release');
-            }, 250);
-        }, 150);
-        bubblePopup.innerHTML = '<span class="bubble-loader"></span>';
-        bubblePopup.classList.add('show');
-        generateAIText();
-    }, 300);
-}
-
-function endBigPress(e) {
-    clearTimeout(bigPressTimer);
-    if (!isPressed && e && e.type !== 'mouseleave' && e.type !== 'touchcancel') {
-        window.lastClickedElement = 'big-circle';
-        document.getElementById('fileInput').click();
-    }
-    isPressed = false;
-}
-
-// 鼠标事件
-bigCircle.addEventListener('mousedown', startBigPress);
-bigCircle.addEventListener('mouseup', endBigPress);
-bigCircle.addEventListener('mouseleave', endBigPress);
-
-// 触摸事件
-bigCircle.addEventListener('touchstart', startBigPress, { passive: true });
-bigCircle.addEventListener('touchend', endBigPress, { passive: true });
-bigCircle.addEventListener('touchcancel', endBigPress);
-
-// 点击大圆时标记当前操作元素
-bigCircle.addEventListener('click', function(e) {
-    window.lastClickedElement = 'big-circle';
-});
-
-async function generateAIText() {
-    if (isGenerating) return;
-    isGenerating = true;
-    const baseURL = config.baseURL;
-    const apiKey = config.apiKey;
-    const model = config.model;
-    if (!baseURL || !apiKey || !model) {
-        bubblePopup.innerHTML = '请先到设置中配置API！';
-        setTimeout(() => { bubblePopup.classList.remove('show'); }, 3000);
-        isGenerating = false;
-        return;
-    }
-    try {
-        let chatUrl = baseURL;
-        if (chatUrl.endsWith('/')) chatUrl = chatUrl.slice(0, -1);
-        chatUrl += '/chat/completions';
-        const response = await fetch(chatUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-            body: JSON.stringify({
-                model: model,
-                messages: [
-                    { role: 'system', content: '你是我的AI伴侣，请用简短可爱的话回应我，每次不超过20个字。' },
-                    { role: 'user', content: '我现在轻轻按了一下你，你想对我说什么？' }
-                ],
-                max_tokens: 50
-            })
-        });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
-        const reply = data.choices[0].message.content;
-        bubblePopup.innerHTML = reply;
-        setTimeout(() => { bubblePopup.classList.remove('show'); }, 4000);
-    } catch (error) {
-        bubblePopup.innerHTML = `生成失败: ${error.message}`;
-        setTimeout(() => { bubblePopup.classList.remove('show'); }, 3000);
-    } finally {
-        isGenerating = false;
-    }
-}
 
 function showToast(message, isSuccess = true) {
     const toast = document.getElementById('toast');
@@ -1490,166 +1421,6 @@ function saveConfig() {
     try { localStorage.setItem('aiConfig', JSON.stringify(config)); } catch(e) {}
     showToast('配置保存成功');
 }
-
-// ===== 图标拖拽逻辑（支持触摸） =====
-let activeDrag = null;
-const ICON_GRID_X = 75;
-const ICON_GRID_Y = 88;
-const allAppIcons = document.querySelectorAll('#icon-area .app-wrapper');
-const iconData = [];
-
-allAppIcons.forEach((icon, index) => {
-    icon.setAttribute('data-id', index);
-    iconData.push({ element: icon, left: parseFloat(icon.style.left), top: parseFloat(icon.style.top) });
-    
-    function startIconDrag(e) {
-        activeDrag = { type: 'icon', element: icon, id: index, startX: e.clientX, startY: e.clientY, originalLeft: parseFloat(icon.style.left), originalTop: parseFloat(icon.style.top), moveDistance: 0 };
-        icon.style.zIndex = 9999;
-        icon.style.transition = 'none';
-    }
-    
-    icon.addEventListener('mousedown', startIconDrag);
-    bindTouchEvents(icon, { mousedown: startIconDrag });
-});
-
-// 鼠标移动
-document.addEventListener('mousemove', handleIconMove);
-// 触摸移动
-document.addEventListener('touchmove', function(e) {
-    const touch = e.touches[0];
-    handleIconMove({ clientX: touch.clientX, clientY: touch.clientY, preventDefault: () => {} });
-}, { passive: true });
-
-function handleIconMove(e) {
-    if (activeDrag && activeDrag.type === 'icon') {
-        const dx = e.clientX - activeDrag.startX;
-        const dy = e.clientY - activeDrag.startY;
-        activeDrag.element.style.left = `${activeDrag.originalLeft + dx}px`;
-        activeDrag.element.style.top = `${activeDrag.originalTop + dy}px`;
-        activeDrag.moveDistance = Math.max(activeDrag.moveDistance, Math.abs(dx) + Math.abs(dy));
-    } else if (activeDrag && activeDrag.type === 'dock-icon') {
-        const dx = e.clientX - activeDrag.startX;
-        const dy = e.clientY - activeDrag.startY;
-        activeDrag.element.style.left = `${activeDrag.originalLeft + dx}px`;
-        activeDrag.element.style.top = `${activeDrag.originalTop + dy}px`;
-        activeDrag.element.style.zIndex = 300;
-        activeDrag.moveDistance = Math.max(activeDrag.moveDistance, Math.abs(dx) + Math.abs(dy));
-    }
-}
-
-// 鼠标释放
-document.addEventListener('mouseup', handleIconDrop);
-// 触摸结束
-document.addEventListener('touchend', function(e) {
-    handleIconDrop(e);
-}, { passive: true });
-
-function handleIconDrop(e) {
-    if (!activeDrag) return;
-    
-    if (activeDrag.moveDistance < 5) {
-        activeDrag = null;
-        return;
-    }
-    
-    if (activeDrag.type === 'icon') {
-        const el = activeDrag.element;
-        el.style.transition = 'left 0.25s ease, top 0.25s ease';
-        const targetCol = Math.round(parseFloat(el.style.left) / ICON_GRID_X);
-        const targetRow = Math.round(parseFloat(el.style.top) / ICON_GRID_Y);
-        const targetLeft = targetCol * ICON_GRID_X;
-        const targetTop = targetRow * ICON_GRID_Y;
-        let targetIcon = null;
-        let targetIconIndex = -1;
-        for (let i = 0; i < iconData.length; i++) {
-            if (i === activeDrag.id) continue;
-            if (iconData[i].left === targetLeft && iconData[i].top === targetTop) {
-                targetIcon = iconData[i].element;
-                targetIconIndex = i;
-                break;
-            }
-        }
-        if (targetIcon) {
-            targetIcon.style.transition = 'left 0.25s ease, top 0.25s ease';
-            targetIcon.style.left = `${activeDrag.originalLeft}px`;
-            targetIcon.style.top = `${activeDrag.originalTop}px`;
-            el.style.left = `${targetLeft}px`;
-            el.style.top = `${targetTop}px`;
-            iconData[targetIconIndex].left = activeDrag.originalLeft;
-            iconData[targetIconIndex].top = activeDrag.originalTop;
-            iconData[activeDrag.id].left = targetLeft;
-            iconData[activeDrag.id].top = targetTop;
-        } else {
-            el.style.left = `${targetLeft}px`;
-            el.style.top = `${targetTop}px`;
-            iconData[activeDrag.id].left = targetLeft;
-            iconData[activeDrag.id].top = targetTop;
-        }
-        el.style.zIndex = 100;
-        activeDrag = null;
-    } else if (activeDrag.type === 'dock-icon') {
-        const el = activeDrag.element;
-        el.style.transition = 'left 0.25s ease, top 0.25s ease';
-        const currentLeft = parseFloat(el.style.left);
-        const originalPositions = [25, 150, 275];
-        let closestIndex = 0;
-        let closestDistance = Infinity;
-        originalPositions.forEach((pos, index) => {
-            const distance = Math.abs(currentLeft - pos);
-            if (distance < closestDistance) { closestDistance = distance; closestIndex = index; }
-        });
-        const targetLeft = originalPositions[closestIndex];
-        const allDockIcons = document.querySelectorAll('.dock-app-icon');
-        const dockIconData = [];
-        allDockIcons.forEach((dockIcon, index) => {
-            dockIcon.setAttribute('data-dock-id', index);
-            dockIconData.push({ element: dockIcon, left: parseFloat(dockIcon.style.left), top: parseFloat(dockIcon.style.top) });
-        });
-        let targetDockIcon = null;
-        let targetDockIconIndex = -1;
-        for (let i = 0; i < dockIconData.length; i++) {
-            if (i === activeDrag.id) continue;
-            if (dockIconData[i].left === targetLeft) {
-                targetDockIcon = dockIconData[i].element;
-                targetDockIconIndex = i;
-                break;
-            }
-        }
-        if (targetDockIcon) {
-            targetDockIcon.style.transition = 'left 0.25s ease, top 0.25s ease';
-            targetDockIcon.style.left = `${activeDrag.originalLeft}px`;
-            targetDockIcon.style.top = `${activeDrag.originalTop}px`;
-            el.style.left = `${targetLeft}px`;
-            el.style.top = `${activeDrag.originalTop}px`;
-            dockIconData[targetDockIconIndex].left = activeDrag.originalLeft;
-            dockIconData[targetDockIconIndex].top = activeDrag.originalTop;
-            dockIconData[activeDrag.id].left = targetLeft;
-            dockIconData[activeDrag.id].top = activeDrag.originalTop;
-        } else {
-            el.style.left = `${targetLeft}px`;
-            el.style.top = `${activeDrag.originalTop}px`;
-            dockIconData[activeDrag.id].left = targetLeft;
-            dockIconData[activeDrag.id].top = activeDrag.originalTop;
-        }
-        el.style.zIndex = 300;
-        activeDrag = null;
-    }
-}
-
-// ===== Dock内部图标：独立拖拽 =====
-const dockIconElements = document.querySelectorAll('.dock-app-icon');
-dockIconElements.forEach((icon, index) => {
-    icon.setAttribute('data-dock-id', index);
-    
-    function startDockDrag(e) {
-        activeDrag = { type: 'dock-icon', element: icon, id: index, startX: e.clientX, startY: e.clientY, originalLeft: parseFloat(icon.style.left), originalTop: parseFloat(icon.style.top), moveDistance: 0 };
-        icon.style.transition = 'none';
-        icon.style.zIndex = 9999;
-    }
-    
-    icon.addEventListener('mousedown', startDockDrag);
-    bindTouchEvents(icon, { mousedown: startDockDrag });
-});
 
 // ===== 结缘入场动画 =====
 function showDestinyIntro() {
