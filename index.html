@@ -19,7 +19,7 @@
                 </span>
             </div>
 
-            <div id="avatar-circle" onclick="window.lastClickedElement = 'avatar-circle'; document.getElementById('fileInput').click()">
+            <div id="avatar-circle" onclick="document.getElementById('fileInput').click()">
                 <div class="avatar-placeholder">点击<br>上传头像</div>
             </div>
             
@@ -28,10 +28,6 @@
             </div>
             
             <input type="file" id="fileInput" accept="image/*" style="display: none;">
-
-            <!-- 挤压大圆与气泡 -->
-            <div id="big-circle"><span>点击上传图片</span></div>
-            <div id="bubble-popup"><span class="bubble-loader"></span></div>
 
             <div id="icon-area">
                 <div class="app-wrapper" data-app="Chat" style="left: 0px; top: 0px;">
@@ -64,13 +60,13 @@
             </div>
 
             <div id="dock">
-                <div class="dock-app-icon" data-dock-id="0" id="dock-icon-0" style="left: 25px;" onclick="selectDockIconToChange(0)">
+                <div class="dock-app-icon" data-dock-id="0" id="dock-icon-0" onclick="selectDockIconToChange(0)">
                     <svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2-6.4-4.8-6.4 4.8L8 14 2 9.2h7.6z"/></svg>
                 </div>
-                <div class="dock-app-icon" data-dock-id="1" id="dock-icon-1" style="left: 150px;" onclick="selectDockIconToChange(1)">
+                <div class="dock-app-icon" data-dock-id="1" id="dock-icon-1" onclick="selectDockIconToChange(1)">
                     <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                 </div>
-                <div class="dock-app-icon" data-dock-id="2" id="dock-icon-2" style="left: 275px;" onclick="selectDockIconToChange(2)">
+                <div class="dock-app-icon" data-dock-id="2" id="dock-icon-2" onclick="selectDockIconToChange(2)">
                     <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                 </div>
             </div>
